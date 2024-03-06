@@ -1,0 +1,53 @@
+{% extends "master.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+  <div class="bg-primary bg-gradient" style="--bs-bg-opacity: .5;">
+    <div id="layoutAuthentication">
+      <div id="layoutAuthentication_content">
+        <main>
+          <div class="container mt-5">
+            <div class="row justify-content-center">
+              <div class="col-md-6">
+                <div class="card ">
+                  <header class="card-header">
+                    <h3 class="text-center font-weight-light my-4">Login</h3>
+                  </header>
+                  <article class="card-body">
+                    <div>
+                      {% if form.errors %}
+                        <div class="alert alert-danger">Username atau Password kamu salah. Silahkan coba kembali.</div>
+                      {% endif %}
+                    </div>
+                    {% load widget_tweaks %}
+                    <form method="post" action="{% url 'login' %}" novalidate>
+                      {% csrf_token %}
+                      <div class="form-group mb-3">
+                        <label>{{ form.username.label_tag }}</label>
+                        {% render_field form.username class="form-control" %}
+                      </div>
+                      <!-- form-group end.// -->
+                      <div class="form-group my-3">
+                        <label>{{ form.password.label_tag }}</label>
+                        {% render_field form.password class="form-control" %}
+                      </div>
+                      <!-- form-group end.// -->
+                      <div class="form-group my-3">
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                      </div>
+                      <!-- form-group// -->
+                    </form>
+                  </article> <!-- card-body end .// -->
+                </div>
+                <!-- card.// -->
+              </div>
+              <!-- col.//-->
+            </div>
+            <!-- row.//-->
+          </div>
+        </main>
+      </div>
+      <div id="layoutAuthentication_footer">{% include 'components/footer.html' %}</div>
+    </div>
+  </div>
+{% endblock %}

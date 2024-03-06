@@ -1,0 +1,77 @@
+{% extends "components/navbar.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block dashboard_content %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Kelola Dokumen</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Page ini digunakan untuk mengelola dokumen sebagai knowladge base untuk chatbot</li>
+        </ol>
+        <!-- Button trigger modal -->
+        <button type="button"
+                class="btn btn-secondary my-3"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">  
+                <i class="fa-solid fa-file-circle-plus"></i>
+                Tambah Dokumen</button>
+        <!-- Modal -->
+        <div class="modal fade"
+             id="staticBackdrop"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false"
+             tabindex="-1"
+             aria-labelledby="staticBackdropLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Pilih file .pdf</h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="inputGroupFile02" accept=".pdf">
+                            <!-- <label class="input-group-text" for="inputGroupFile02">Upload</label> -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                DataTable Example
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>Age</th>
+                            <th>Start date</th>
+                            <th>Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tiger Nixon</td>
+                            <td>System Architect</td>
+                            <td>Edinburgh</td>
+                            <td>61</td>
+                            <td>2011/04/25</td>
+                            <td>$320,800</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
