@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django settings file
+Chatbot/settings.py
+
+# SQLite database file
+db.sqlite3
+
+# Media files
+media/
+
+# Static files
+staticfiles/
+
+# Virtual environment
+venv/
+env/
+
+# IDE files
+.idea/
+.vscode/
+
+# Compiled Python bytecode
+*.pyc
+
+# Ignore any local development settings (e.g., Django debug toolbar settings)
+local_settings.py
+
+# Ignore migration files
+**/migrations/

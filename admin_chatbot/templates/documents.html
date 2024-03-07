@@ -2,6 +2,31 @@
 {% block title %}Kelola Dokumen{% endblock %}
 {% block dashboard_content %}
     <div class="container-fluid px-4">
+        <!-- Tampilkan pesan sukses jika ada -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="alert alert-danger alert-dismissible fade show my-3"
+                         role="alert">
+                        {{ message }}
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success alert-dismissible fade show my-3"
+                         role="alert">
+                        {{ message }}
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <div id="liveAlertPlaceholder"></div>
         <h1 class="mt-4">Kelola Dokumen</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item active">Page ini digunakan untuk mengelola dokumen sebagai knowladge base untuk chatbot</li>
@@ -63,15 +88,22 @@
                     </thead>
                     <tbody>
                         {% for file in files %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td> <!-- Nomor urut -->
-                            <td>{{ file.file_name }}</td> <!-- Nama file -->
-                            <td>{{ file.uploaded_at }}</td> <!-- Waktu upload -->
-                            <td>Aksi {{ forloop.counter }}</td> <!-- Waktu upload -->
-                        </tr>
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <!-- Nomor urut -->
+                                <td>{{ file.file_name }}</td>
+                                <!-- Nama file -->
+                                <td>{{ file.uploaded_at }}</td>
+                                <!-- Waktu upload -->
+                                <td>
+                                    <a type="button" class="btn btn-success m-1" href="{{ file.file_path.url }}" target="_blank"><i class="fa-solid fa-book-open-reader"></i>    Lihat</a>
+                                    <button type="button" class="btn btn-danger m-1"><i class="fa-solid fa-file-circle-minus"></i>    Hapus</button>
+                                </td>
+                                <!-- Waktu upload -->
+                            </tr>
                         {% endfor %}
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-{% endblock %}
+    {% endblock %}

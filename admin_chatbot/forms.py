@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.forms import fields
+from django.forms import ValidationError, fields
 
 from .models import FileUpload
 
@@ -29,6 +29,9 @@ class UploadForm(forms.ModelForm):
         cleaned_data = super().clean()
         # Ambil nama file yang diunggah
         file_path = cleaned_data.get('file_path')
+        if FileUpload.objects.filter(file_name=file_path.name).exists() or not file_path.name.endswith('.pdf'):
+            raise ValidationError("")
+            # raise forms.ValidationError("File dengan nama yang sama sudah ada di database.")
         if file_path:
             cleaned_data['file_name'] = file_path.name  # Set nilai file_name dengan nama file yang diunggah
         return cleaned_data

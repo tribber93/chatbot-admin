@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.urls import path
 from . import views
+from django.conf.urls.static import static
 from .views import CustomLoginView, CustomLogoutView, DashboardView, KelolaDokumenView
 
 urlpatterns = [
@@ -8,3 +10,6 @@ urlpatterns = [
     path('dashboard/kelola-dokumen/', KelolaDokumenView.as_view(), name='kelola-dokumen'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
 ]
+
+# Tambahkan URL untuk menyajikan file media
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

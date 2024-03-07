@@ -43,4 +43,13 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         files = FileUpload.objects.all()  # Anda dapat menggunakan query yang sesuai di sini
         context['files'] = files
         return context
-      
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'File berhasil diupload.')
+        return response
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        messages.error(self.request, 'File gagal diupload. Pastikan nama file tidak ada yang sama dan format file harus .pdf.')
+        return response
