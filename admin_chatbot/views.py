@@ -1,15 +1,17 @@
+import os
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic import CreateView
+from django.views.generic.edit import DeleteView
 
 from django.contrib.auth.views import LoginView, LogoutView
 from .forms import UploadForm
 
 from .models import FileUpload
-
+from django.contrib.auth.decorators import login_required
 
 class CustomLoginView(LoginView):
 	template_name = 'login.html';
@@ -47,3 +49,9 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         response = super().form_invalid(form)
         messages.error(self.request, 'File gagal diupload. Pastikan nama file tidak ada yang sama dan format file harus .pdf.')
         return response
+
+@login_required
+def deletePDF(request, id):
+    pdf_data = FileUpload.objects.get(id=id)
+    pdf_data.delete()
+    return redirect('kelola-dokumen')

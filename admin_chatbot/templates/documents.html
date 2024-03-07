@@ -96,8 +96,20 @@
                                 <td>{{ file.uploaded_at }}</td>
                                 <!-- Waktu upload -->
                                 <td>
-                                    <a type="button" class="btn btn-success m-1" href="{{ file.file_path.url }}" target="_blank"><i class="fa-solid fa-book-open-reader"></i>    Lihat</a>
-                                    <button type="button" class="btn btn-danger m-1"><i class="fa-solid fa-file-circle-minus"></i>    Hapus</button>
+                                    <a type="button"
+                                       class="btn btn-success m-1"
+                                       href="{{ file.file_path.url }}"
+                                       target="_blank">
+                                        <i class="fa-solid fa-book-open-reader"></i>    Lihat
+                                    </a>
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <a type="button"
+                                           class="btn btn-danger m-1"
+                                           href="{% url 'delete_file' file.id %}">
+                                            <i class="fa-solid fa-file-circle-minus"></i>    Hapus
+                                        </a>
+                                    </form>
                                 </td>
                                 <!-- Waktu upload -->
                             </tr>

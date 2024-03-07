@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('dashboard/kelola-dokumen/', KelolaDokumenView.as_view(), name='kelola-dokumen'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('dashboard/kelola-dokumen/delete/<int:id>/', view=views.deletePDF, name='delete_file'),
 ]
 
 # Tambahkan URL untuk menyajikan file media
