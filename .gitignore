@@ -9,6 +9,9 @@ Chatbot/settings.py
 # SQLite database file
 db.sqlite3
 
+# .env file
+.env
+
 # Media files
 media/
 
