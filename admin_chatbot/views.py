@@ -1,17 +1,11 @@
-import imp
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
-from multiprocessing import context
-from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from django.views.generic import CreateView
 
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views import View
 from .forms import UploadForm
 
 from .models import FileUpload
