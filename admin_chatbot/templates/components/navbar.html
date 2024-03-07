@@ -37,13 +37,15 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Utama</div>
-                            <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}" href="{% url 'dashboard' %}">
+                            <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}"
+                               href="{% url 'dashboard' %}">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-tachometer-alt"></i>
                                 </div>
                                 Dashboard
                             </a>
-                            <a class="nav-link {% if request.path == '/dashboard/kelola-dokumen/' %}active{% endif %}" href="{% url 'kelola-dokumen' %}">
+                            <a class="nav-link {% if request.path == '/dashboard/kelola-dokumen/' %}active{% endif %}"
+                               href="{% url 'kelola-dokumen' %}">
                                 <div class="sb-nav-link-icon">
                                     <i class="fa-solid fa-file-pdf"></i>
                                 </div>
@@ -60,10 +62,10 @@
             <div id="layoutSidenav_content">
                 <main>
                     {% block dashboard_content %}{% endblock %}
-                    
                 </main>
                 {% include 'components/footer.html' %}
             </div>
         </div>
     </div>
+    
 {% endblock %}

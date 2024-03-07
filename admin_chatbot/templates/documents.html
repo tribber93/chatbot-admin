@@ -2,7 +2,6 @@
 {% block title %}Kelola Dokumen{% endblock %}
 {% block dashboard_content %}
     <div class="container-fluid px-4">
-        <!-- Tampilkan pesan sukses jika ada -->
         {% if messages %}
             {% for message in messages %}
                 {% if message.tags == 'error' %}
@@ -26,6 +25,16 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+        <!-- {% if request.GET.success %}
+            <div class="alert alert-success alert-dismissible fade show my-3"
+                 role="alert">
+                 {{ request.GET.success }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endif %} -->
         <div id="liveAlertPlaceholder"></div>
         <h1 class="mt-4">Kelola Dokumen</h1>
         <ol class="breadcrumb mb-4">
@@ -96,26 +105,22 @@
                                 <td>{{ file.uploaded_at }}</td>
                                 <!-- Waktu upload -->
                                 <td>
-                                    <a type="button"
-                                       class="btn btn-success m-1"
-                                       href="{{ file.file_path.url }}"
-                                       target="_blank">
-                                        <i class="fa-solid fa-book-open-reader"></i>    Lihat
+                                    <a type="button" class="btn btn-success m-1" href="{{ file.file_path.url }}" target="_blank">
+                                        <i class="fa-solid fa-book-open-reader"></i> Lihat
                                     </a>
-                                    <form action="" method="post">
+                                    <form action="{% url 'delete_file' file.id %}" method="post" class="d-inline">
                                         {% csrf_token %}
-                                        <a type="button"
-                                           class="btn btn-danger m-1"
-                                           href="{% url 'delete_file' file.id %}">
-                                            <i class="fa-solid fa-file-circle-minus"></i>    Hapus
-                                        </a>
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
+                                            <i class="fa-solid fa-file-circle-minus"></i> Hapus
+                                        </button>
                                     </form>
                                 </td>
                                 <!-- Waktu upload -->
                             </tr>
                         {% endfor %}
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
-    {% endblock %}
+    </div>
+{% endblock %}

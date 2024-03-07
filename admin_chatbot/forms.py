@@ -11,10 +11,10 @@ class LoginForm(forms.Form):
     password = forms.CharField(
                     widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder':'Password'})
                 )
-
 class UploadForm(forms.ModelForm):
     file_path = forms.FileField(label='Pilih file .pdf', 
-                                widget=forms.ClearableFileInput(attrs={'class': 'form-control mt-3', 'accept': '.pdf'})
+                                widget=forms.ClearableFileInput(attrs={'class': 'form-control mt-3', 'accept': '.pdf'}),
+                                help_text='Maksimal ukuran file 10MB, format .pdf',
                                 )# Tambahkan atribut accept untuk membatasi jenis file yang dapat diunggah
  
     class Meta:
@@ -22,16 +22,12 @@ class UploadForm(forms.ModelForm):
         fields = ['file_name', 'file_path']
         widgets = {
             'file_name': forms.HiddenInput(),  # Menyembunyikan field file_name
-            
         }
     
     def clean(self):
         cleaned_data = super().clean()
         # Ambil nama file yang diunggah
         file_path = cleaned_data.get('file_path')
-        if FileUpload.objects.filter(file_name=file_path.name).exists() or not file_path.name.endswith('.pdf'):
-            raise ValidationError("")
-            # raise forms.ValidationError("File dengan nama yang sama sudah ada di database.")
         if file_path:
             cleaned_data['file_name'] = file_path.name  # Set nilai file_name dengan nama file yang diunggah
         return cleaned_data

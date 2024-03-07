@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic import CreateView
 from django.views.generic.edit import DeleteView
+from django.urls import reverse
 
 from django.contrib.auth.views import LoginView, LogoutView
 from .forms import UploadForm
@@ -41,14 +42,21 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         return context
     
     def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, 'File berhasil diupload.')
-        return response
+        file = form.cleaned_data['file_path']
+        if not file.name.endswith('.pdf'):
+            messages.error(self.request, 'File harus berformat PDF!')
+            return self.form_invalid(form)
+        if file.size > 10 * 1024 * 1024:
+            messages.error(self.request, 'Ukuran file tidak boleh lebih dari 10 MB!')
+            return self.form_invalid(form)
+        if FileUpload.objects.filter(file_name=file.name).exists():
+            messages.error(self.request, 'File dengan nama yang sama sudah ada!')
+            return self.form_invalid(form)
+        messages.success(self.request, 'File berhasil diunggah!')
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        response = super().form_invalid(form)
-        messages.error(self.request, 'File gagal diupload. Pastikan nama file tidak ada yang sama dan format file harus .pdf.')
-        return response
+        return self.render_to_response(self.get_context_data(form=form))
 
 @login_required
 def deletePDF(request, id):
