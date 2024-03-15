@@ -26,13 +26,9 @@
             {% endfor %}
         {% endif %}
         <!-- {% if request.GET.success %}
-            <div class="alert alert-success alert-dismissible fade show my-3"
-                 role="alert">
+            <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
                  {{ request.GET.success }}
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endif %} -->
         <div id="liveAlertPlaceholder"></div>
@@ -105,12 +101,19 @@
                                 <td>{{ file.uploaded_at }}</td>
                                 <!-- Waktu upload -->
                                 <td>
-                                    <a type="button" class="btn btn-success m-1" href="{{ file.file_path.url }}" target="_blank">
+                                    <a type="button"
+                                       class="btn btn-success m-1"
+                                       href="{{ file.file_url }}"
+                                       target="_blank">
                                         <i class="fa-solid fa-book-open-reader"></i> Lihat
                                     </a>
-                                    <form action="{% url 'delete_file' file.id %}" method="post" class="d-inline">
+                                    <form action="{% url 'delete_file' file.id %}"
+                                          method="post"
+                                          class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
+                                        <button type="submit"
+                                                class="btn btn-danger"
+                                                onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
                                             <i class="fa-solid fa-file-circle-minus"></i> Hapus
                                         </button>
                                     </form>
