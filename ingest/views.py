@@ -1,15 +1,27 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django_celery_results.models import TaskResult
 
 from .helper import send_mail_without_celery
 
 from ingest.tasks import send_email_task, tidur, add, test_task
+from celery.result import AsyncResult
 
 # Create your views here.
 
 def test(request):
     # send_mail_without_celery()
     # send_email_task.delay()
-    test_task.delay(10)
+    result = test_task.delay(90)
+    print(result.id)
     # tidur.delay(60)
-    return HttpResponse('<h1>Hello, World!</h1>')
+    # return render(request, 'index.html',context={'nama':'Skidipapap','task': result})
+    return HttpResponse(f'Test dijalankan! {result.id}')
+
+def result(request):
+
+# Mendapatkan semua objek TaskResult
+    all_task_results = TaskResult.objects.all()
+        
+    # print(all_task_results)
+    return render(request, 'index.html',context={'nama':'Skidipapap','task': all_task_results})

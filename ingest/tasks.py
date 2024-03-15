@@ -28,6 +28,8 @@ def test_task(number):
     n = number + 1
     for i in range(number):
         n -= 1
-        print(n)
+        if n % 10 == 0:
+            print(n)
+        # print(n)
         time.sleep(1)
     return "Test task done!"
