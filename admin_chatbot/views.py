@@ -40,7 +40,7 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Ambil data FileUpload dari basis data
-        files = FileUpload.objects.all()  # Anda dapat menggunakan query yang sesuai di sini
+        files = FileUpload.objects.select_related('task_result')  # Anda dapat menggunakan query yang sesuai di sini
         context['files'] = files
         return context
     
@@ -65,11 +65,12 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
             supabase.storage.from_("pdf").upload(file=f, path=file.name, file_options={"content-type": "application/pdf"})
         
         file_url = supabase.storage.from_('pdf').get_public_url(file)
-        task = test_task.delay(15)
-        time.sleep(1)
         form.instance.file_url = file_url
         form.instance.file_name = file.name
         messages.success(self.request, 'File berhasil diunggah!')
+        
+        task = test_task.delay(30)
+        time.sleep(1)
         task_result_instance = TaskResult.objects.get(task_id=task)
         form.instance.task_result = task_result_instance
         return super().form_valid(form)
