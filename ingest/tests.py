@@ -1,43 +1,32 @@
 import os
-from django.test import TestCase
-from dotenv import load_dotenv
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+from langchain_community.document_loaders import UnstructuredURLLoader
+import re
 
-from supabase import create_client
+def clean_text(text):
+    # Menghapus karakter khusus seperti \n, \r, dll.
+    cleaned_text = re.sub(r'[\n\r\t]+', ' ', text)
 
-supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
-import os
-from django.conf import settings
+    # Menghapus spasi ganda
+    cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Chatbot.settings')
-settings.configure()
+    # Menghapus tag HTML jika ada
+    cleaned_text = re.sub(r'<.*?>', '', cleaned_text)
 
-# load_dotenv(override=True)
-# # Create your tests here.
-# print(os.getenv('EMAIL_HOST_PASSWORD'))
+    # Menghapus karakter non-ASCII
+    cleaned_text = re.sub(r'[^\x00-\x7F]+', '', cleaned_text)
 
-# response = supabase.table('admin_chatbot_fileupload').select("*").execute()
-# print(response.data[0])
+    return cleaned_text
 
-# filepath = "media/documents/Pengumuman Her registrasi dan KRS Semester Ganjil Tahun Akademik 2023-2024 - Web MyUCIC.pdf"
-# path_on_supastorage = "Pengumuman Her registrasi dan KRS Semester Ganjil Tahun Akademik 2023-2024 - Web MyUCIC.pdf"  # Define the variable "path_on_supastorage"
+# llm = ChatGoogleGenerativeAI(model="gemini-pro")
+# response = llm.invoke("apa arti cinta?")
 
-# with open(filepath, 'rb') as f:
-#     supabase.storage.from_("pdf").upload(file=f, path=path_on_supastorage, file_options={"content-type": "application/pdf"})
-# supabase.storage.from_('pdf').remove("Kompetensi - Fajar Gema Ramadhan.pdf")
-from django_celery_results.models import TaskResult
+# hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
+#     model_name="firqaaa/indo-sentence-bert-base"
+# )
 
-# Mendapatkan semua objek TaskResult
-all_task_results = TaskResult.objects.all()
-print(all_task_results )
-# Mendapatkan hasil task dengan ID tertentu
-# task_result = TaskResult.objects.get(id=4)
-
-# # Menampilkan status hasil task
-# print(task_result.status)
-
-# # Menampilkan waktu mulai dan selesai
-# print(task_result.date_done)
-# print(task_result.date_started)
-
-# # Menampilkan hasil dari task jika sudah selesai
-# print(task_result.result)
+loader = UnstructuredURLLoader(urls=["https://laiybgdrmnbcmmmgxhwj.supabase.co/storage/v1/object/public/pdf/Surat%20Pemberitahuan%20UAS%20Ganjil%202023.2024%20-%20Mahasiswa.pdf?"])
+docs = loader.load()
+docs = clean_text(docs[0].page_content)
+print(docs)

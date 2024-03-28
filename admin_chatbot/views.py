@@ -56,7 +56,7 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
             messages.error(self.request, 'File dengan nama yang sama sudah ada!')
             return self.form_invalid(form)
         
-        print(type(file))
+        # print(type(file))
         FileSystemStorage(location="/temp").save(file.name, file)
         filepath = "/temp/" + file.name
         
@@ -67,12 +67,13 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         file_url = supabase.storage.from_('pdf').get_public_url(file)
         form.instance.file_url = file_url
         form.instance.file_name = file.name
-        messages.success(self.request, 'File berhasil diunggah!')
         
-        task = test_task.delay(30)
-        time.sleep(1)
+        # print("File URL:", file_url)
+        task = test_task.delay(60)
+        time.sleep(0.5)
         task_result_instance = TaskResult.objects.get(task_id=task)
         form.instance.task_result = task_result_instance
+        messages.success(self.request, 'File berhasil diunggah!')
         return super().form_valid(form)
 
     def form_invalid(self, form):

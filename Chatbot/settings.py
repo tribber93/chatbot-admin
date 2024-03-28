@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    
     'django_celery_results',
     'admin_chatbot',
     'widget_tweaks',
@@ -147,7 +149,8 @@ LOGIN_REDIRECT_URL = 'dashboard'
 CELERY_RESULT_BACKEND = 'django-db'
 # CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 CELERY_CACHE_BACKEND = 'django-cache'
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'rediss://default:AVNS_EDcGy5rAGAxpzZXelTE@db-redis-sgp1-84915-do-user-14939151-0.c.db.ondigitalocean.com:25061'
 # celery setting.
 # CELERY_CACHE_BACKEND = 'default'
 CELERY_TIMEZONE = "Asia/Jakarta"
