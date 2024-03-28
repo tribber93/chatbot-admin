@@ -1,8 +1,9 @@
 import os
+import re
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain_community.document_loaders import UnstructuredURLLoader
-import re
+from langchain.vectorstores import Chroma
 
 def clean_text(text):
     # Menghapus karakter khusus seperti \n, \r, dll.
@@ -19,6 +20,14 @@ def clean_text(text):
 
     return cleaned_text
 
+class VectorStore:
+    def __init__(self, model_name: str):
+        self.model_name = model_name
+        self.vector_store = Chroma(model_name)
+
+    def get_vector(self, text: str):
+        return self.vector_store.get_vector(text)
+    
 # llm = ChatGoogleGenerativeAI(model="gemini-pro")
 # response = llm.invoke("apa arti cinta?")
 
