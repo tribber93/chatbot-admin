@@ -70,7 +70,7 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         
         # print("File URL:", file_url)
         task = test_task.delay(60)
-        time.sleep(0.5)
+        time.sleep(1)
         task_result_instance = TaskResult.objects.get(task_id=task)
         form.instance.task_result = task_result_instance
         messages.success(self.request, 'File berhasil diunggah!')
@@ -85,4 +85,5 @@ def deletePDF(request, id):
     task = pdf_data.task_result_id
     TaskResult.objects.get(id=task).delete()
     pdf_data.delete()  # Ini akan menghapus file dari Supabase Storage
+    messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
     return redirect('kelola-dokumen')

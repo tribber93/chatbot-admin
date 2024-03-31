@@ -68,4 +68,43 @@
         </div>
     </div>
     
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault(); // Mencegah form submit langsung
+        
+                var formData = new FormData($(this)[0]); // Membuat objek FormData dari form
+        
+                $('#uploadProgress').show(); // Menampilkan indikator loading saat proses upload dimulai
+        
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', function (evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = (evt.loaded / evt.total) * 100;
+                                $('.progress-bar').css('width', percentComplete.toFixed(2) + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function (data) {
+                        $('#uploadProgress').hide(); // Sembunyikan indikator loading setelah upload selesai
+                        alert('File uploaded successfully!');
+                        // Tambahkan logika lainnya setelah upload selesai
+                    },
+                    error: function (xhr, status, error) {
+                        $('#uploadProgress').hide(); // Sembunyikan indikator loading jika terjadi error
+                        alert('Error uploading file!');
+                    }
+                });
+            });
+        });
+        </script>
+        
 {% endblock %}

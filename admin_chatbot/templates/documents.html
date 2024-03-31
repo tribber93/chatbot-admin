@@ -2,6 +2,9 @@
 {% load humanize %}
 {% block title %}Kelola Dokumen{% endblock %}
 {% block dashboard_content %}
+    <div id="uploadProgress" class="progress" style="display: none;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>  
     <div class="container-fluid px-4">
         {% if messages %}
             {% for message in messages %}
@@ -108,7 +111,7 @@
                                             <i class="fa-solid fa-check"></i>
                                             <span role="status">Done</span>
                                         </button>
-                                    {% elif item.status == "FAILURE" %}
+                                    {% elif file.task_result.status == "FAILURE" %}
                                         <button class="btn btn-danger" type="button" disabled>
                                             <i class="fa-solid fa-times"></i>
                                             <span role="status">Failed</span>
@@ -133,7 +136,7 @@
                                           class="d-inline">
                                         {% csrf_token %}
                                         <button type="submit"
-                                                class="btn btn-danger"
+                                                class="btn btn-danger" {% if file.task_result.status == 'STARTED' %} disabled {% endif %} 
                                                 onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
                                             <i class="fa-solid fa-file-circle-minus"></i> Hapus
                                         </button>

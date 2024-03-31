@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     
+    'channels',
     'django_celery_results',
     'admin_chatbot',
     'widget_tweaks',
@@ -150,7 +151,7 @@ CELERY_RESULT_BACKEND = 'django-db'
 # CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 CELERY_CACHE_BACKEND = 'django-cache'
 # CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_BROKER_URL = 'rediss://default:AVNS_EDcGy5rAGAxpzZXelTE@db-redis-sgp1-84915-do-user-14939151-0.c.db.ondigitalocean.com:25061'
+CELERY_BROKER_URL = os.getenv('REDIS_URL')
 # celery setting.
 # CELERY_CACHE_BACKEND = 'default'
 CELERY_TIMEZONE = "Asia/Jakarta"
@@ -178,3 +179,5 @@ SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 # Membuat klien Supabase
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+ASGI_APPLICATION = 'Chatbot.asgi.application'
