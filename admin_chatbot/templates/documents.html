@@ -1,6 +1,10 @@
 {% extends "components/navbar.html" %}
+{% load humanize %}
 {% block title %}Kelola Dokumen{% endblock %}
 {% block dashboard_content %}
+    <div id="uploadProgress" class="progress" style="display: none;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>  
     <div class="container-fluid px-4">
         {% if messages %}
             {% for message in messages %}
@@ -26,13 +30,9 @@
             {% endfor %}
         {% endif %}
         <!-- {% if request.GET.success %}
-            <div class="alert alert-success alert-dismissible fade show my-3"
-                 role="alert">
+            <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
                  {{ request.GET.success }}
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endif %} -->
         <div id="liveAlertPlaceholder"></div>
@@ -92,6 +92,7 @@
                             <th>No</th>
                             <th>Nama File</th>
                             <th>Waktu Upload</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -103,14 +104,40 @@
                                 <td>{{ file.file_name }}</td>
                                 <!-- Nama file -->
                                 <td>{{ file.uploaded_at }}</td>
+                                <td>
+                                    {% if file.task_result.status == "SUCCESS" %}
+                                        <button class="btn btn-success" type="button" disabled>
+                                            <!-- <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> -->
+                                            <i class="fa-solid fa-check"></i>
+                                            <span role="status">Done</span>
+                                        </button>
+                                    {% elif file.task_result.status == "FAILURE" %}
+                                        <button class="btn btn-danger" type="button" disabled>
+                                            <i class="fa-solid fa-times"></i>
+                                            <span role="status">Failed</span>
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-primary" type="button" disabled>
+                                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                            <span role="status">Loading...</span>
+                                        </button>
+                                    {% endif %}
+                                </td>
                                 <!-- Waktu upload -->
                                 <td>
-                                    <a type="button" class="btn btn-success m-1" href="{{ file.file_path.url }}" target="_blank">
+                                    <a type="button"
+                                       class="btn btn-success m-1"
+                                       href="{{ file.file_url }}"
+                                       target="_blank">
                                         <i class="fa-solid fa-book-open-reader"></i> Lihat
                                     </a>
-                                    <form action="{% url 'delete_file' file.id %}" method="post" class="d-inline">
+                                    <form action="{% url 'delete_file' file.id %}"
+                                          method="post"
+                                          class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
+                                        <button type="submit"
+                                                class="btn btn-danger" {% if file.task_result.status == 'STARTED' %} disabled {% endif %} 
+                                                onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
                                             <i class="fa-solid fa-file-circle-minus"></i> Hapus
                                         </button>
                                     </form>

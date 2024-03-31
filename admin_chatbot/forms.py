@@ -19,10 +19,7 @@ class UploadForm(forms.ModelForm):
  
     class Meta:
         model = FileUpload
-        fields = ['file_name', 'file_path']
-        widgets = {
-            'file_name': forms.HiddenInput(),  # Menyembunyikan field file_name
-        }
+        fields = ['file_path']
     
     def clean(self):
         cleaned_data = super().clean()
