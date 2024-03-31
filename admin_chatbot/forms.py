@@ -28,3 +28,12 @@ class UploadForm(forms.ModelForm):
         if file_path:
             cleaned_data['file_name'] = file_path.name  # Set nilai file_name dengan nama file yang diunggah
         return cleaned_data
+    
+    # Supabase
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     # Ambil nama file yang diunggah
+    #     file_path = cleaned_data.get('file_path')
+    #     if file_path:
+    #         cleaned_data['file_name'] = file_path.name  # Set nilai file_name dengan nama file yang diunggah
+    #     return cleaned_data
