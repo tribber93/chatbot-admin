@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.views.generic import CreateView
 
 from django.contrib.auth.views import LoginView, LogoutView
+import Chatbot
 from Chatbot.settings import supabase
 from .forms import UploadForm
 
@@ -57,16 +58,19 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
         
         # print(type(file))
-        FileSystemStorage(location="/temp").save(file.name, file)
-        filepath = "/temp/" + file.name
+        # FileSystemStorage(location="/temp").save(file.name, file)
+        # filepath = "/temp/" + file.name
         
-        # Upload file ke Supabase Storage
-        with open(filepath, 'rb') as f:
-            supabase.storage.from_("pdf").upload(file=f, path=file.name)#, file_options={"content-type": "application/pdf"}
+        # # Upload file ke Supabase Storage
+        # with open(filepath, 'rb') as f:
+        #     supabase.storage.from_("pdf").upload(file=f, path=file.name)#, file_options={"content-type": "application/pdf"}
         
-        file_url = supabase.storage.from_('pdf').get_public_url(file).replace(" ", "%20")
-        form.instance.file_url = file_url
-        form.instance.file_name = file.name
+        # file_url = supabase.storage.from_('pdf').get_public_url(file).replace(" ", "%20")
+        # form.instance.file_url = file_url
+        fs = FileSystemStorage(location=os.path.join(Chatbot.settings.MEDIA_ROOT, 'documents'))  # Simpan di dalam folder uploads
+        # saved_file = fs.save(file.name, file)
+        
+        form.instance.file_name = form.cleaned_data['file_name']
         
         task = test_task.delay(60)
         time.sleep(1)
@@ -77,12 +81,19 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
-
+    
 @login_required
 def deletePDF(request, id):
     pdf_data = FileUpload.objects.get(id=id)
-    task = pdf_data.task_result_id
-    TaskResult.objects.get(id=task).delete()
-    pdf_data.delete()  # Ini akan menghapus file dari Supabase Storage
-    messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
+    pdf_data.delete()
     return redirect('kelola-dokumen')
+
+# Supabase
+# @login_required
+# def deletePDF(request, id):
+#     pdf_data = FileUpload.objects.get(id=id)
+#     task = pdf_data.task_result_id
+#     TaskResult.objects.get(id=task).delete()
+#     pdf_data.delete()  # Ini akan menghapus file dari Supabase Storage
+#     messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
+#     return redirect('kelola-dokumen')
