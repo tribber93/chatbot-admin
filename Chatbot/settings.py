@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     
-    'channels',
     'django_celery_results',
     'admin_chatbot',
     'widget_tweaks',

@@ -62,13 +62,12 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         
         # Upload file ke Supabase Storage
         with open(filepath, 'rb') as f:
-            supabase.storage.from_("pdf").upload(file=f, path=file.name, file_options={"content-type": "application/pdf"})
+            supabase.storage.from_("pdf").upload(file=f, path=file.name)#, file_options={"content-type": "application/pdf"}
         
-        file_url = supabase.storage.from_('pdf').get_public_url(file)
+        file_url = supabase.storage.from_('pdf').get_public_url(file).replace(" ", "%20")
         form.instance.file_url = file_url
         form.instance.file_name = file.name
         
-        # print("File URL:", file_url)
         task = test_task.delay(60)
         time.sleep(1)
         task_result_instance = TaskResult.objects.get(task_id=task)
