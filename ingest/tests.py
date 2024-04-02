@@ -1,41 +1,39 @@
 import os
-import re
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
-from langchain_community.document_loaders import UnstructuredURLLoader
-from langchain.vectorstores import Chroma
+from dotenv import load_dotenv
+from django.conf import settings
+from my_class import MyVectorDatabase, create_retriever
+from langchain_community.document_loaders import UnstructuredPDFLoader
+from langchain.storage import LocalFileStore
+from langchain.storage._lc_store import create_kv_docstore
 
-def clean_text(text):
-    # Menghapus karakter khusus seperti \n, \r, dll.
-    cleaned_text = re.sub(r'[\n\r\t]+', ' ', text)
+load_dotenv()
+# settings.configure()
+fs = LocalFileStore("./docstore")
+store = create_kv_docstore(fs)
 
-    # Menghapus spasi ganda
-    cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
+# print(os.path.join(settings.MEDIA_URL,'documents/Pengumuman_Her_registrasi_dan_KRS_Semester_Ganjil_Tahun_Akademik_2023-2024_-_W_33SBFkh.pdf'))
+# path = "media\documents\Pengumuman_Her_registrasi_dan_KRS_Semester_Ganjil_Tahun_Akademik_2023-2024_-_W_33SBFkh.pdf"
+path = "media\documents\Jadwal_Perkuliahan_Semester_Genap_TA_2023-2024_9_Maret_24.pdf"
 
-    # Menghapus tag HTML jika ada
-    cleaned_text = re.sub(r'<.*?>', '', cleaned_text)
+qdrant_url = os.getenv("QDRANT_URL")
+qdrant_api_key = os.getenv("QDRANT_API_KEY")
+collection_name = 'test'
 
-    # Menghapus karakter non-ASCII
-    cleaned_text = re.sub(r'[^\x00-\x7F]+', '', cleaned_text)
+hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
+    api_key=os.getenv('HF_TOKEN'), model_name="firqaaa/indo-sentence-bert-base" #"intfloat/multilingual-e5-base"
+)
 
-    return cleaned_text
+client = MyVectorDatabase(qdrant_url, qdrant_api_key, collection_name)
+vector_db = client.vector_store(hf_embeddings)
+# print(client.count_all_chunk())
 
-class VectorStore:
-    def __init__(self, model_name: str):
-        self.model_name = model_name
-        self.vector_store = Chroma(model_name)
-
-    def get_vector(self, text: str):
-        return self.vector_store.get_vector(text)
-    
-# llm = ChatGoogleGenerativeAI(model="gemini-pro")
-# response = llm.invoke("apa arti cinta?")
-
-# hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
-#     model_name="firqaaa/indo-sentence-bert-base"
-# )
-
-loader = UnstructuredURLLoader(urls=["https://laiybgdrmnbcmmmgxhwj.supabase.co/storage/v1/object/public/pdf/Surat%20Pemberitahuan%20UAS%20Ganjil%202023.2024%20-%20Mahasiswa.pdf?"])
+#Load document
+loader = UnstructuredPDFLoader(path)
 docs = loader.load()
-docs = clean_text(docs[0].page_content)
-print(docs)
+
+retriever = create_retriever(vector_db, store)
+
+retriever.add_documents(docs)
+
+# ingest_data.delay(path)

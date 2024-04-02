@@ -2,9 +2,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django_celery_results.models import TaskResult
 
-from .helper import send_mail_without_celery
-
-from ingest.tasks import send_email_task, tidur, add, test_task
 from celery.result import AsyncResult
 
 # Create your views here.
@@ -12,8 +9,8 @@ from celery.result import AsyncResult
 def test(request):
     # send_mail_without_celery()
     # send_email_task.delay()
-    result = test_task.delay(90)
-    print(result.id)
+    # result = test_task.delay(90)
+    # print(result.id)
     # tidur.delay(60)
     # return render(request, 'index.html',context={'nama':'Skidipapap','task': result})
     return HttpResponse(f'Test dijalankan! {result.id}')

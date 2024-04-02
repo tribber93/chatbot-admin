@@ -5,18 +5,20 @@ from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.conf import settings
 from django.views.generic import CreateView
 
 from django.contrib.auth.views import LoginView, LogoutView
-import Chatbot
-from Chatbot.settings import supabase
+# import Chatbot
+# from Chatbot.settings import supabase
 from .forms import UploadForm
 
 from .models import FileUpload
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
-from ingest.tasks import test_task
+from ingest.tasks import delete_from_vector_db_and_docstore
 from django_celery_results.models import TaskResult
+
 
 class CustomLoginView(LoginView):
 	template_name = 'login.html';
@@ -57,25 +59,9 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
             messages.error(self.request, 'File dengan nama yang sama sudah ada!')
             return self.form_invalid(form)
         
-        # print(type(file))
-        # FileSystemStorage(location="/temp").save(file.name, file)
-        # filepath = "/temp/" + file.name
-        
-        # # Upload file ke Supabase Storage
-        # with open(filepath, 'rb') as f:
-        #     supabase.storage.from_("pdf").upload(file=f, path=file.name)#, file_options={"content-type": "application/pdf"}
-        
-        # file_url = supabase.storage.from_('pdf').get_public_url(file).replace(" ", "%20")
-        # form.instance.file_url = file_url
-        fs = FileSystemStorage(location=os.path.join(Chatbot.settings.MEDIA_ROOT, 'documents'))  # Simpan di dalam folder uploads
-        # saved_file = fs.save(file.name, file)
+        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'documents'))  # Simpan di dalam folder uploads
         
         form.instance.file_name = form.cleaned_data['file_name']
-        
-        task = test_task.delay(10)
-        time.sleep(1)
-        task_result_instance = TaskResult.objects.get(task_id=task)
-        form.instance.task_result = task_result_instance
         messages.success(self.request, 'File berhasil diunggah!')
         return super().form_valid(form)
 
@@ -85,6 +71,9 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
 @login_required
 def deletePDF(request, id):
     pdf_data = FileUpload.objects.get(id=id)
+    path = pdf_data.file_path.path
+    # print(os.path.join(settings.MEDIA_ROOT, path))
+    delete_from_vector_db_and_docstore(os.path.join(settings.MEDIA_ROOT, path))
     task = pdf_data.task_result_id
     TaskResult.objects.get(id=task).delete()
     pdf_data.delete() 

@@ -1,6 +1,11 @@
 import os
+import time
+from django.conf import settings
 from django.db import models
 from django_celery_results.models import TaskResult
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from ingest.tasks import ingest_data
 
 from supabase import create_client
 # from django.core.exceptions import ValidationError
@@ -24,6 +29,16 @@ class FileUpload(models.Model):
                 os.remove(file_path)
         super().delete(*args, **kwargs)
     
+@receiver(post_save, sender=FileUpload)
+def process_ingest_data(sender, instance, created, **kwargs):
+    if created:  # Pastikan proses hanya dijalankan saat objek baru dibuat
+        path = instance.file_path.path
+        path = os.path.join(settings.MEDIA_ROOT, path)
+        task = ingest_data.delay(path)
+        time.sleep(1)
+        task_result_instance = TaskResult.objects.get(task_id=task)
+        instance.task_result = task_result_instance
+        instance.save()  # Simpan instance setelah menetapkan task_result
     # Supabase
     # def delete(self, *args, **kwargs):
     #     if self.file_name:
