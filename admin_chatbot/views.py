@@ -72,7 +72,7 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         
         form.instance.file_name = form.cleaned_data['file_name']
         
-        task = test_task.delay(60)
+        task = test_task.delay(10)
         time.sleep(1)
         task_result_instance = TaskResult.objects.get(task_id=task)
         form.instance.task_result = task_result_instance
@@ -85,15 +85,8 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
 @login_required
 def deletePDF(request, id):
     pdf_data = FileUpload.objects.get(id=id)
-    pdf_data.delete()
+    task = pdf_data.task_result_id
+    TaskResult.objects.get(id=task).delete()
+    pdf_data.delete() 
+    messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
     return redirect('kelola-dokumen')
-
-# Supabase
-# @login_required
-# def deletePDF(request, id):
-#     pdf_data = FileUpload.objects.get(id=id)
-#     task = pdf_data.task_result_id
-#     TaskResult.objects.get(id=task).delete()
-#     pdf_data.delete()  # Ini akan menghapus file dari Supabase Storage
-#     messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
-#     return redirect('kelola-dokumen')
