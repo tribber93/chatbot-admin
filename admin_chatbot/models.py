@@ -5,7 +5,7 @@ from django.db import models
 from django_celery_results.models import TaskResult
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from ingest.tasks import ingest_data
+from rag_task.tasks import ingest_data
 
 from supabase import create_client
 # from django.core.exceptions import ValidationError

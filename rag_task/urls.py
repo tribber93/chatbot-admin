@@ -4,8 +4,9 @@ from . import views
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('ingest/', view=views.result, name='ingest'),
-    path('ingest/test', view=views.test, name='test'),
+    # path('ingest/', view=views.result, name='ingest'),
+    # path('ingest/test', view=views.test, name='test'),
+    path('chat/', view=views.chat, name='chat'),
 ]
 
 # Tambahkan URL untuk menyajikan file media

@@ -16,7 +16,7 @@ from .forms import UploadForm
 from .models import FileUpload
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
-from ingest.tasks import delete_from_vector_db_and_docstore
+from rag_task.tasks import delete_from_vector_db_and_docstore
 from django_celery_results.models import TaskResult
 
 
@@ -43,7 +43,7 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Ambil data FileUpload dari basis data
-        files = FileUpload.objects.select_related('task_result')  # Anda dapat menggunakan query yang sesuai di sini
+        files = FileUpload.objects.select_related('task_result').order_by('-uploaded_at')  # Anda dapat menggunakan query yang sesuai di sini
         context['files'] = files
         return context
     
@@ -74,8 +74,11 @@ def deletePDF(request, id):
     path = pdf_data.file_path.path
     # print(os.path.join(settings.MEDIA_ROOT, path))
     delete_from_vector_db_and_docstore(os.path.join(settings.MEDIA_ROOT, path))
-    task = pdf_data.task_result_id
-    TaskResult.objects.get(id=task).delete()
+    try:
+        task = pdf_data.task_result_id
+        TaskResult.objects.get(id=task).delete()
+    except TaskResult.DoesNotExist:
+        pass
     pdf_data.delete() 
     messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
     return redirect('kelola-dokumen')
