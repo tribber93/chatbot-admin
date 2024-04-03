@@ -16,7 +16,7 @@ from .forms import UploadForm
 from .models import FileUpload
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
-from ingest.tasks import delete_from_vector_db_and_docstore
+from rag_task.tasks import delete_from_vector_db_and_docstore
 from django_celery_results.models import TaskResult
 
 
