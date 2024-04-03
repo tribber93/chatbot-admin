@@ -18,6 +18,7 @@ class FileUpload(models.Model):
     # total_used = models.IntegerField(default=0)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     task_result = models.OneToOneField(TaskResult, on_delete=models.CASCADE, null=True, blank=True)
+    count_retrieved = models.IntegerField(default=0)
     
     def delete(self, *args, **kwargs):
         # Hapus file media terkait saat objek dihapus dari basis data
