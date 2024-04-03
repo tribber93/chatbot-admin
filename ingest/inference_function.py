@@ -2,7 +2,7 @@ import os
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
-from my_class import MyVectorDatabase, create_retriever
+from .my_class import MyVectorDatabase, create_retriever
 from langchain.storage import LocalFileStore
 from langchain.storage._lc_store import create_kv_docstore
 from langchain_core.output_parsers import StrOutputParser
@@ -30,40 +30,36 @@ client = MyVectorDatabase(qdrant_url, qdrant_api_key, collection_name)
 vector_db = client.vector_store(hf_embeddings)
 
 
+llm = ChatGoogleGenerativeAI(model="gemini-pro")
 retriever = create_retriever(vector_db, store)
 
-template = """
-kamu adalah asisten virtual untuk membantu memberikan informasi akademik di Universitas Catur Insan Cendekia
-jawab pertanyaan berdasarkan konteks yang diberikan dengan response seperti percakapan
-usahakan SELALU menjawab dengan detail dari setiap pertanyaannya.
+def augmetation():
+    template = """
+    kamu adalah asisten virtual untuk membantu memberikan informasi akademik di Universitas Catur Insan Cendekia
+    jawab pertanyaan berdasarkan konteks yang diberikan dengan response seperti percakapan
+    usahakan SELALU menjawab dengan detail dari setiap pertanyaannya.
 
-CONTEXT: {context}
+    CONTEXT: {context}
 
-</s>
-<|user|>
-{question}
-</s>
-<|assistant|>
-"""
+    </s>
+    <|user|>
+    {question}
+    </s>
+    <|assistant|>
+    """
 
-llm = ChatGoogleGenerativeAI(model="gemini-pro")
 
-prompt = ChatPromptTemplate.from_template(template)
+    prompt = ChatPromptTemplate.from_template(template)
+    
+    return prompt
 
-chain = (
-    {"context": retriever, "question": RunnablePassthrough()}
-    | prompt
-    | llm
-    | output_parser
-)
-
-query = "bagaimana cara membuat surat yang menandakan saya masih berkuliah di CIC?"
-response = chain.invoke(query)
-
-print(response)
-end_time = time.time()
-print(f"Lama waktu yang dibutuhkan: {end_time - start_time} detik")
-
-# print(retriever.get_relevant_documents(query))
-# print("=====================================")
-# print(list(store.yield_keys()))
+def chain():
+    prompt = augmetation()
+    chain = (
+        {"context": retriever, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | output_parser
+    )
+    
+    return chain

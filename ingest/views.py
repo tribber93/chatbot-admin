@@ -1,24 +1,18 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from django_celery_results.models import TaskResult
-
-from celery.result import AsyncResult
-
 # Create your views here.
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from ingest.inference_function import chain
 
-def test(request):
-    # send_mail_without_celery()
-    # send_email_task.delay()
-    # result = test_task.delay(90)
-    # print(result.id)
-    # tidur.delay(60)
-    # return render(request, 'index.html',context={'nama':'Skidipapap','task': result})
-    return HttpResponse(f'Test dijalankan! {result.id}')
 
-def result(request):
+chain = chain()
 
-# Mendapatkan semua objek TaskResult
-    all_task_results = TaskResult.objects.all()
-        
-    # print(all_task_results)
-    return render(request, 'index.html',context={'nama':'Skidipapap','task': all_task_results})
+@api_view(['POST'])
+def chat(request):
+    if request.method == 'POST':
+        data = request.data  # Mendapatkan data yang diterima dalam permintaan
+        # Lakukan inferensi menggunakan model Anda
+        # Prediksi hasil
+        result = chain.invoke(data['question'])
+        # result = your_model.predict(data)
+        # Kembalikan hasil dalam respons API
+        return Response({'result': result})

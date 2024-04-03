@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'admin_chatbot',
     'widget_tweaks',
     'ingest',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
