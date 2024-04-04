@@ -30,8 +30,8 @@ SECRET_KEY = 'django-insecure-gi@qdjx+70=4a8m1t%j_6&2^dd*7a%=ncs7m%rjufi@$m6hgzr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = []
+ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
 
 # Application definition
 
