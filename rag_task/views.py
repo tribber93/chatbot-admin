@@ -1,13 +1,14 @@
 # Create your views here.
+import json
 import time
 
 from celery import shared_task
 from admin_chatbot.models import FileUpload
 from django.db.models import F
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from django.http import JsonResponse
 from rag_task.inference_function import chain, chain_with_source
 from .functions import create_retriever
+from django.views.decorators.csrf import csrf_exempt
 
 
 retriever = create_retriever()
@@ -16,19 +17,26 @@ instance = FileUpload.objects.all()
 chain = chain()
 chain_with_source = chain_with_source()
 
-@api_view(['POST'])
+
+@csrf_exempt
 def chat(request):
     if request.method == 'POST':
-        data = request.data 
-        query = data['question']
+        data = json.loads(request.body)
+        query = data.get('question', '')
         
         result = chain_with_source.invoke(query)
-        doc_id = result['context'][0].metadata['id']
         
-        FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+        output = {
+            "question": query,
+            "answer": result['answer']
+        }
         
-        # return Response({"response": result})
-        return Response(result)
+        if result['context'] != []:
+            doc_id = result['context'][0].metadata['id']
+            
+            FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+            
+        return JsonResponse(output)
     
 @shared_task
 def update_count(query):
