@@ -14,11 +14,11 @@ def chat(request):
     if request.method == 'POST':
         data = request.data  
         
-        result = chain_with_source.invoke(data['question'])
-        if result['context'] != []:
-            local_source = result['context'][0].metadata['source'].split('\\')[-1]
-            source = local_source.replace('_', ' ')
+        result = chain.invoke(data['question'])
+        # if result['context'] != []:
+        #     local_source = result['context'][0].metadata['source'].split('\\')[-1]
+        #     source = local_source.replace('_', ' ')
 
-            FileUpload.objects.filter(file_name=source).update(count_retrieved=F('count_retrieved') + 1)
+        #     FileUpload.objects.filter(file_name=source).update(count_retrieved=F('count_retrieved') + 1)
         
         return Response(result)
