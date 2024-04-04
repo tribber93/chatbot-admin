@@ -15,6 +15,9 @@ db.sqlite3
 # Media files
 media/
 
+# docstore files
+docstore/
+
 # Static files
 staticfiles/
 
@@ -34,3 +37,8 @@ local_settings.py
 
 # Ignore migration files
 **/migrations/
+
+# Ignore pycache
+**/__pycache__
+*.pyc
+

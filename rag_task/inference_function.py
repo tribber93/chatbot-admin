@@ -1,8 +1,12 @@
+from django.dispatch import receiver
+from admin_chatbot.signals import data_updated
 from langchain_core.prompts import ChatPromptTemplate
-from .functions import create_retriever
+from .functions import create_retriever#, base_retriever
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.storage import LocalFileStore
+from langchain.storage._lc_store import create_kv_docstore
 
 output_parser = StrOutputParser()
 llm = ChatGoogleGenerativeAI(model="gemini-pro")
@@ -20,6 +24,15 @@ CONTEXT: {context}
 </s>
 <|assistant|>
 """
+
+@receiver(data_updated)
+def handle_data_updated(sender, **kwargs):
+    # Tambahkan logika untuk memuat ulang data yang diperlukan
+    global store
+    fs = LocalFileStore("./docstore")
+    store = create_kv_docstore(fs)
+    # Misalnya, muat ulang data dari basis data atau cache
+    print("Data telah diperbarui. Memuat ulang data...")
 
 prompt = ChatPromptTemplate.from_template(template)
 

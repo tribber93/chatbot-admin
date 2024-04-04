@@ -22,9 +22,13 @@ def chat(request):
         data = request.data 
         query = data['question']
         
-        result = chain.invoke(query)
+        result = chain_with_source.invoke(query)
+        doc_id = result['context'][0].metadata['id']
         
-        return Response({"response": result})
+        FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+        
+        # return Response({"response": result})
+        return Response(result)
     
 @shared_task
 def update_count(query):
