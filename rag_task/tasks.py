@@ -1,15 +1,16 @@
-from .functions import create_retriever, vector_db, store, delete_a_chunk_doc
+from .functions import create_retriever, store, delete_a_chunk_doc
 from langchain_community.document_loaders import UnstructuredPDFLoader
 from celery import shared_task
 import time
 
+retriever = create_retriever()
+
 @shared_task
-def ingest_data(path):
+def ingest_data(path, id: int):
     start_time = time.time()
     loader = UnstructuredPDFLoader(path)
     docs = loader.load()
-
-    retriever = create_retriever(vector_db, store)
+    docs[0].metadata['id'] = id
 
     retriever.add_documents(docs)
     end_time = time.time()
@@ -17,6 +18,7 @@ def ingest_data(path):
     # Hitung lama waktu yang dibutuhkan
     duration = end_time - start_time
     return f"Lama waktu yang dibutuhkan: {duration} detik"
+
 
 def get_a_docstore_ids(file_path):
     docstore_ids = list(store.yield_keys())
