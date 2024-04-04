@@ -149,7 +149,7 @@ LOGIN_REDIRECT_URL = 'dashboard'
 CELERY_RESULT_BACKEND = 'django-db'
 # CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 CELERY_CACHE_BACKEND = 'django-cache'
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = os.getenv('REDIS_URL')
 # celery setting.
 # CELERY_CACHE_BACKEND = 'default'
 CELERY_TIMEZONE = "Asia/Jakarta"
@@ -165,13 +165,6 @@ CELERY_TASK_SERIALIZER = 'json'
 #         'LOCATION': 'my_cache_table',
 #     }
 # }
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_PORT = 587
-EMAIL_USER_SSL = False
 
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
