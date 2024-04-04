@@ -29,7 +29,7 @@ def delete_a_chunk_doc(file_path):
     vector_db._collection.delete(ids=ids)
     print("count after", vector_db._collection.count())
 
-def create_retriever(vector_db, store):
+def create_retriever():
     parent_splitter = RecursiveCharacterTextSplitter(chunk_size=1024)
     child_splitter = RecursiveCharacterTextSplitter(chunk_size=256)
     # store = InMemoryStore()

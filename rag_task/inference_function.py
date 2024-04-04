@@ -1,12 +1,12 @@
 from langchain_core.prompts import ChatPromptTemplate
-from .functions import create_retriever, vector_db, store
+from .functions import create_retriever
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 output_parser = StrOutputParser()
 llm = ChatGoogleGenerativeAI(model="gemini-pro")
-retriever = create_retriever(vector_db, store)
+retriever = create_retriever()
 template = """
 kamu adalah asisten virtual untuk membantu memberikan informasi akademik di Universitas Catur Insan Cendekia
 jawab pertanyaan berdasarkan konteks yang diberikan dengan response seperti percakapan
