@@ -34,3 +34,7 @@ local_settings.py
 
 # Ignore migration files
 **/migrations/
+
+# Ignore pycache
+# **/__pycache__
+# *.pyc
