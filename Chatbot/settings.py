@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-gi@qdjx+70=4a8m1t%j_6&2^dd*7a%=ncs7m%rjufi@$m6hgzr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = []
 
 # Application definition
@@ -150,8 +150,8 @@ LOGIN_REDIRECT_URL = 'dashboard'
 CELERY_RESULT_BACKEND = 'django-db'
 # CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 CELERY_CACHE_BACKEND = 'django-cache'
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_BROKER_URL = os.getenv('REDIS_URL')
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = os.getenv('REDIS_URL')
 # celery setting.
 # CELERY_CACHE_BACKEND = 'default'
 CELERY_TIMEZONE = "Asia/Jakarta"
