@@ -15,12 +15,10 @@ def chat(request):
         data = request.data  
         
         result = chain_with_source.invoke(data['question'])
-        local_source = result['context'][0].metadata['source'].split('\\')[-1]
-        source = local_source.replace('_', ' ')
+        if result['context'] != []:
+            local_source = result['context'][0].metadata['source'].split('\\')[-1]
+            source = local_source.replace('_', ' ')
 
-        # instance = FileUpload.objects.get(file_name=source)
-        # instance.count_retrieved += 1
-        # instance.save()
-        FileUpload.objects.filter(file_name=source).update(count_retrieved=F('count_retrieved') + 1)
+            FileUpload.objects.filter(file_name=source).update(count_retrieved=F('count_retrieved') + 1)
         
         return Response(result)
