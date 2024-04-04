@@ -87,13 +87,13 @@ WSGI_APPLICATION = 'Chatbot.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('SUPA_DB_NAME'),
-        'USER': os.getenv('SUPA_DB_USER'),
-        'PASSWORD': os.getenv('SUPA_DB_PASSWORD'),
-        'HOST': os.getenv('SUPA_DB_HOST'),
-        'PORT': os.getenv('SUPA_DB_PORT'),
+        'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
