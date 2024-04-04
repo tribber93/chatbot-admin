@@ -1,5 +1,4 @@
 from django.dispatch import receiver
-from admin_chatbot.signals import data_updated
 from langchain_core.prompts import ChatPromptTemplate
 from .functions import create_retriever#, base_retriever
 from langchain_core.output_parsers import StrOutputParser
@@ -24,15 +23,6 @@ CONTEXT: {context}
 </s>
 <|assistant|>
 """
-
-@receiver(data_updated)
-def handle_data_updated(sender, **kwargs):
-    # Tambahkan logika untuk memuat ulang data yang diperlukan
-    global store
-    fs = LocalFileStore("./docstore")
-    store = create_kv_docstore(fs)
-    # Misalnya, muat ulang data dari basis data atau cache
-    print("Data telah diperbarui. Memuat ulang data...")
 
 prompt = ChatPromptTemplate.from_template(template)
 
