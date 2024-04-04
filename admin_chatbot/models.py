@@ -1,5 +1,6 @@
 import os
 import time
+from .signals import data_updated
 from django.conf import settings
 from django.db import models
 from django_celery_results.models import TaskResult
@@ -39,10 +40,5 @@ def process_ingest_data(sender, instance, created, **kwargs):
         task_result_instance = TaskResult.objects.get(task_id=task)
         instance.task_result = task_result_instance
         instance.save()  # Simpan instance setelah menetapkan task_result
-    # Supabase
-    # def delete(self, *args, **kwargs):
-    #     if self.file_name:
-    #         # Hapus file dari Supabase Storage
-    #         supabase.storage.from_('pdf').remove(self.file_name)
-    #     super().delete(*args, **kwargs)
+        data_updated.send(sender=None)
         

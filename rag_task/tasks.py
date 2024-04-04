@@ -1,4 +1,4 @@
-from .functions import create_retriever, store, delete_a_chunk_doc
+from .functions import create_retriever, store, delete_a_chunk_doc, client, vector_db
 from langchain_community.document_loaders import UnstructuredPDFLoader
 from celery import shared_task
 import time
@@ -33,5 +33,9 @@ def delete_from_vector_db_and_docstore(file_path):
     store_ids = get_a_docstore_ids(file_path)
     store.mdelete(store_ids)
     
-    delete_a_chunk_doc(file_path)
+    if client.count_all_chunk() != 0:
+        vector_ids = client.get_ids_a_document_chunk(file_path)
+        if len(vector_ids) != 0:
+            vector_db.delete(vector_ids)
+    # delete_a_chunk_doc(file_path)
     return f"Data berhasil dihapus dari database"
