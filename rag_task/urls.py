@@ -4,10 +4,8 @@ from . import views, webhook
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # path('ingest/', view=views.result, name='ingest'),
-    # path('ingest/test', view=views.test, name='test'),
-    path('chat/', view=views.chat, name='chat'),
-    path('yt93/webhook', view=webhook.webhook, name='webhook'),
+    path('api/v1/chat/', view=views.chat, name='chat'),
+    path('webhook/', view=webhook.webhook, name='webhook'),
     path('home/', view=webhook.home, name='home'),
     path('reset/', view=webhook.reset, name='reset'),
 ]
