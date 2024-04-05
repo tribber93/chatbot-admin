@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'admin.tribber.me']
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'https://admin.tribber.me']
 
 # Application definition
 
