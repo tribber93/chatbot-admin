@@ -79,10 +79,10 @@ def make_rag_request(message, from_number):
             FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
         response_message = re.sub(r'\*\*(.*?)\*\*', r'*\1*', response)
         
-        # print(f"RAG response: {response_message}")
+        print(f"RAG response: {response_message}")
         update_message_log(response_message, from_number, "assistant")
     except Exception as e:
-        # print(f"RAG error: {e}")
+        print(f"RAG error: {e}")
         response_message = "Sorry, the RAG API is currently overloaded or offline. Please try again later."
         remove_last_message_from_log(from_number)
     return response_message
@@ -123,7 +123,7 @@ def handle_message(request):
             )
     # catch all other errors and return an internal server error
     except Exception as e:
-        # print(f"unknown error: {e}")
+        print(f"unknown error: {e}")
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 
