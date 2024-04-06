@@ -30,8 +30,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
+ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app', '192.168.2.3']
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'http://192.168.2.3']
 
 # Application definition
 
@@ -115,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
