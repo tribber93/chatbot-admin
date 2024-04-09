@@ -1,110 +1,42 @@
-{% extends "master.html" %}
-{% block content %}
-    <div class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="{% url 'dashboard' %}">Pengelola Chatbot</a>
-            <!-- Sidebar Toggle-->
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
-                    id="sidebarToggle"
-                    href="#!">
-                <i class="fas fa-bars"></i>
-            </button>
-            <!-- Navbar-->
-            <ul class="navbar-nav ms-auto me-0 me-md-3 my-2 my-md-0">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"
-                       id="navbarDropdown"
-                       href="#"
-                       role="button"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="navbarDropdown">
-                        <li>
-                            <form action="{% url 'logout' %}" method="post">
-                                {% csrf_token %}
-                                <button class="dropdown-item" type="submit">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Utama</div>
-                            <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}"
-                               href="{% url 'dashboard' %}">
-                                <div class="sb-nav-link-icon">
-                                    <i class="fas fa-tachometer-alt"></i>
-                                </div>
-                                Dashboard
-                            </a>
-                            <a class="nav-link {% if request.path == '/dashboard/kelola-dokumen/' %}active{% endif %}"
-                               href="{% url 'kelola-dokumen' %}">
-                                <div class="sb-nav-link-icon">
-                                    <i class="fa-solid fa-file-pdf"></i>
-                                </div>
-                                Kelola Dokumen
-                            </a>
-                        </div>
-                    </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Masuk sebagai:</div>
-                        {{ user.first_name }} {{ user.last_name }}
-                    </div>
-                </nav>
-            </div>
-            <div id="layoutSidenav_content">
-                <main>
-                    {% block dashboard_content %}{% endblock %}
-                </main>
-                {% include 'components/footer.html' %}
-            </div>
-        </div>
+{% load static %}
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+     id="layout-navbar">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+            <i class="bx bx-menu bx-sm"></i>
+        </a>
     </div>
-    
-    <script>
-        $(document).ready(function () {
-            $('form').submit(function (event) {
-                event.preventDefault(); // Mencegah form submit langsung
-        
-                var formData = new FormData($(this)[0]); // Membuat objek FormData dari form
-        
-                $('#uploadProgress').show(); // Menampilkan indikator loading saat proses upload dimulai
-        
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: $(this).attr('method'),
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    xhr: function () {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener('progress', function (evt) {
-                            if (evt.lengthComputable) {
-                                var percentComplete = (evt.loaded / evt.total) * 100;
-                                $('.progress-bar').css('width', percentComplete.toFixed(2) + '%');
-                            }
-                        }, false);
-                        return xhr;
-                    },
-                    success: function (data) {
-                        $('#uploadProgress').hide(); // Sembunyikan indikator loading setelah upload selesai
-                        alert('File uploaded successfully!');
-                        // Tambahkan logika lainnya setelah upload selesai
-                    },
-                    error: function (xhr, status, error) {
-                        $('#uploadProgress').hide(); // Sembunyikan indikator loading jika terjadi error
-                        alert('Error uploading file!');
-                    }
-                });
-            });
-        });
-        </script>
-        
-{% endblock %}
+    <div class="navbar-nav-right d-flex align-items-center"
+         id="navbar-collapse">
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- Place this tag where you want the button to render. -->
+            <li class="nav-item lh-1 me-3">
+                <p class="pt-3">Hallo, {{ user.first_name }} {{ user.last_name }}</p>
+            </li>
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow"
+                   href="javascript:void(0);"
+                   data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="{% static 'assets/img/user.png' %}"
+                             alt
+                             class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="dropdown-item" type="submit">
+                                <i class="bx bx-power-off me-2"></i>
+                                <span class="align-middle">Log Out</span>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
+    </div>
+</nav>

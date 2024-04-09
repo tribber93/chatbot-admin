@@ -1,34 +1,211 @@
-{% extends "components/navbar.html" %}
-{% block title %} Dashboard {% endblock %}
+{% extends "dashboard_template.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
 {% block dashboard_content %}
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Dashboard</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Dashboard</li>
-    </ol>
-    <div class="row">
-        <div class="col-xl-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-area me-1"></i>
-                    Area Chart Example
-                </div>
-                <div class="card-body">
-                    <canvas id="myAreaChart" width="100%" height="40"></canvas>
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between">
+                                    <div class="avatar flex-shrink-0">
+                                        <img src="{% static 'assets/img/icons/unicons/chart-success.png' %}"
+                                             alt="chart success"
+                                             class="rounded" />
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn p-0"
+                                                type="button"
+                                                id="cardOpt3"
+                                                data-bs-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
+                                            <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                                            <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="fw-semibold d-block mb-1">Profit</span>
+                                <h3 class="card-title mb-2">$12,628</h3>
+                                <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between">
+                                    <div class="avatar flex-shrink-0">
+                                        <img src="{% static 'assets/img/icons/unicons/wallet-info.png' %}"
+                                             alt="Credit Card"
+                                             class="rounded" />
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn p-0"
+                                                type="button"
+                                                id="cardOpt6"
+                                                data-bs-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
+                                            <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                                            <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span>Sales</span>
+                                <h3 class="card-title text-nowrap mb-1">$4,679</h3>
+                                <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Expense Overview -->
+                    <div class="col-md-12 col-lg-12 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body px-2">
+                                <canvas id="frekuensi"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!--/ Expense Overview -->
                 </div>
             </div>
+            <!-- Order Statistics -->
+            <div class="col-md-6 col-lg-6 col-xl-6 order-0 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                        <div class="card-title mb-0">
+                            <h5 class="m-0 me-2">Statistik dokumen</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-column align-items-start gap-1">
+                                <h2 class="mb-2">{{ total_retrieved }}x</h2>
+                                <span>Total dokumen digunakan</span>
+                            </div>
+                            <div style="width: 150px;">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                            <!-- <div id="orderStatisticsChart" data-top-retrieved="{{ top_5_retrieved }}"></div> -->
+                        </div>
+                        <!-- Basic -->
+                        <div class="card-body">
+                            <div class="divider">
+                                <div class="divider-text">Top 5 Dokumen</div>
+                            </div>
+                        </div>
+                        <!-- /Basic -->
+                        <ul class="p-0 m-0">
+                            {% for item in top_5_retrieved %}
+                                <li class="d-flex mb-4 pb-1">
+                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                        <div class="me-2">
+                                            <h6 class="mb-0">{{ item.file_name }}</h6>
+                                            <small class="text-muted">{{ item.count_retrieved }}x digunakan</small>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/ Order Statistics -->
         </div>
-        <div class="col-xl-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-bar me-1"></i>
-                    Bar Chart Example
-                </div>
-                <div class="card-body">
-                    <canvas id="myBarChart" width="100%" height="40"></canvas>
-                </div>
-            </div>
+        <div class="row">
         </div>
     </div>
-</div>
+{% endblock %}
+{% block custom_js %}
+    <!-- Vendors JS -->
+    <script src="{% static '/assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+    <!-- Doughnut chart -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('{% url "dashboard-data" %}')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    
+                    new Chart(ctx, {
+                        type: "doughnut",
+                        data: {
+                          labels: data.labels,
+                          datasets: [
+                            {
+                              data: data.values,
+                              backgroundColor: [
+                                "#696cff",
+                                "#71dd37",
+                                "#03c3ec",
+                                "#ffab00",
+                                "#ff3e1d",
+                                "#8592a3",
+                              ],
+                              hoverOffset: 4,
+                            },
+                          ],
+                        },
+                        options: {
+                          responsive: true,
+                          // maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              display: false,
+                            },
+                            tooltip: {
+                              enabled: true,
+                            },
+                            datalabels: {
+                              display: false, // Menyembunyikan label
+                            },
+                          },
+                        },
+                      });
+                    });
+                });
+    </script>
+    <!-- Time Chart -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('{% url "dashboard-data" %}')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx1 = document.getElementById('frekuensi');
+                    const labels = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+                    const data1 = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: [65, 59, 0, 0, 56, 55, 40],
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                    };
+
+                    new Chart(ctx1, {
+                        type: 'line',
+                        data: data1,
+                        options: {
+                        scales: {
+                            y: {
+                            beginAtZero: true
+                            }
+                        }
+                        }
+                    });
+                });
+            });
+    </script>
 {% endblock %}

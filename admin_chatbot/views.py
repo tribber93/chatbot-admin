@@ -1,5 +1,6 @@
 import os
 import time
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404, redirect, render
@@ -14,10 +15,12 @@ from django.contrib.auth.views import LoginView, LogoutView
 from .forms import UploadForm
 
 from .models import FileUpload
+from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from rag_task.tasks import delete_from_vector_db_and_docstore
 from django_celery_results.models import TaskResult
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class CustomLoginView(LoginView):
@@ -30,20 +33,48 @@ class CustomLogoutView(LogoutView):
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
+    total_retrieved = 0
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Mendapatkan jumlah nilai dari kolom field_name
+        top_5_retrieved = FileUpload.objects.order_by('-count_retrieved')[:5]
+        total_count_retrieved = FileUpload.objects.aggregate(total=Sum('count_retrieved'))['total'] or 0
+        context = {
+            "top_5_retrieved": top_5_retrieved,
+            "total_retrieved":  total_count_retrieved
+        }
+        
+        return context
 
-    def get(self, request):
-        return render(request, self.template_name)
+    # def get(self, request, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+        
+    #     print(context.values().keys())
+    #     return render(request, self.template_name)
     
 class KelolaDokumenView(LoginRequiredMixin, CreateView):
     model = FileUpload
     form_class = UploadForm
-    template_name = "documents.html"
+    template_name = "kelola_dokumen.html"
     success_url = reverse_lazy("kelola-dokumen")
+    paginate_by = 10
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Ambil data FileUpload dari basis data
         files = FileUpload.objects.select_related('task_result').order_by('-uploaded_at')  # Anda dapat menggunakan query yang sesuai di sini
+        
+        paginator = Paginator(files, self.paginate_by)
+        page = self.request.GET.get('page')
+        try:
+            files = paginator.page(page)
+        except PageNotAnInteger:
+            files = paginator.page(1)
+        except EmptyPage:
+            files = paginator.page(paginator.num_pages)
+        
+        
         context['files'] = files
         return context
     
@@ -82,3 +113,20 @@ def deletePDF(request, id):
     pdf_data.delete() 
     messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
     return redirect('kelola-dokumen')
+
+def dashboard_chart(request):
+    data = FileUpload.objects.all()
+    top_5 = FileUpload.objects.order_by('-count_retrieved')[:5]
+    total_top_5 = top_5.aggregate(total=Sum('count_retrieved'))['total'] or 0
+    total_count_retrieved = FileUpload.objects.aggregate(total=Sum('count_retrieved'))['total'] or 0
+    lainnya = total_count_retrieved - total_top_5
+    labels = [item.file_name for item in top_5] + ["Lainnya"]
+    values = [item.count_retrieved for item in top_5] + [lainnya]
+    
+    chart_data = {
+        'labels': labels,
+        'values': values,
+        'chart_type': 'doughnut' # any chart type line, bar, ects
+    }
+    
+    return JsonResponse(chart_data)
