@@ -37,7 +37,7 @@ def process_ingest_data(sender, instance, created, **kwargs):
         path = instance.file_path.path
         path = os.path.join(settings.MEDIA_ROOT, path)
         task = ingest_data.delay(path, instance.id)
-        time.sleep(2)
+        time.sleep(1)
         task_result_instance = TaskResult.objects.get(task_id=task)
         instance.task_result = task_result_instance
         instance.save()  # Simpan instance setelah menetapkan task_result
