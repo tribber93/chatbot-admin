@@ -128,5 +128,84 @@
 {% endblock %}
 {% block custom_js %}
     <!-- Vendors JS -->
-    <script src="{% static '/assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>s
+    <script src="{% static '/assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+    <!-- Doughnut chart -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('{% url "dashboard-data" %}')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    
+                    new Chart(ctx, {
+                        type: "doughnut",
+                        data: {
+                          labels: data.labels,
+                          datasets: [
+                            {
+                              data: data.values,
+                              backgroundColor: [
+                                "#696cff",
+                                "#71dd37",
+                                "#03c3ec",
+                                "#ffab00",
+                                "#ff3e1d",
+                                "#8592a3",
+                              ],
+                              hoverOffset: 4,
+                            },
+                          ],
+                        },
+                        options: {
+                          responsive: true,
+                          // maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              display: false,
+                            },
+                            tooltip: {
+                              enabled: true,
+                            },
+                            datalabels: {
+                              display: false, // Menyembunyikan label
+                            },
+                          },
+                        },
+                      });
+                    });
+                });
+    </script>
+    <!-- Time Chart -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('{% url "dashboard-data" %}')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx1 = document.getElementById('frekuensi');
+                    const labels = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+                    const data1 = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: [65, 59, 0, 0, 56, 55, 40],
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                    };
+
+                    new Chart(ctx1, {
+                        type: 'line',
+                        data: data1,
+                        options: {
+                        scales: {
+                            y: {
+                            beginAtZero: true
+                            }
+                        }
+                        }
+                    });
+                });
+            });
+    </script>
 {% endblock %}
