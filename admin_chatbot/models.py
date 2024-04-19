@@ -36,16 +36,21 @@ def process_ingest_data(sender, instance, created, **kwargs):
     if created:  # Pastikan proses hanya dijalankan saat objek baru dibuat
         path = instance.file_path.path
         path = os.path.join(settings.MEDIA_ROOT, path)
-        try:
-            task = ingest_data.delay(path, instance.id)
-            time.sleep(1)
-            task_result_instance = TaskResult.objects.get(task_id=task)
-            instance.task_result = task_result_instance
-            instance.save()  # Simpan instance setelah menetapkan task_result
-        except Exception as e:
-            print(e)
-            # instance.delete()
-            raise e
-        finally:
-            return redirect('kelola-dokumen')
+        task = ingest_data.delay(path, instance.id)
+        time.sleep(1)
+        task_result_instance = TaskResult.objects.get(task_id=task)
+        instance.task_result = task_result_instance
+        instance.save()  # Simpan instance setelah menetapkan task_result
+        return redirect('kelola-dokumen')
+        # try:
+        #     task = ingest_data.delay(path, instance.id)
+        #     time.sleep(1)
+        #     task_result_instance = TaskResult.objects.get(task_id=task)
+        #     instance.task_result = task_result_instance
+        #     instance.save()  # Simpan instance setelah menetapkan task_result
+        # except Exception as e:
+        #     print(e)
+        #     raise e
+        # finally:
+        #     return redirect('kelola-dokumen')
         
