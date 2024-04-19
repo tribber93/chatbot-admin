@@ -28,10 +28,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'https://admin.tribber.me']
+ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app', '192.168.2.3']
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'http://192.168.2.3', 'http://127.0.0.1']
 
 # Application definition
 
@@ -87,13 +87,13 @@ WSGI_APPLICATION = 'Chatbot.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('SUPA_DB_NAME'),
-        'USER': os.getenv('SUPA_DB_USER'),
-        'PASSWORD': os.getenv('SUPA_DB_PASSWORD'),
-        'HOST': os.getenv('SUPA_DB_HOST'),
-        'PORT': os.getenv('SUPA_DB_PORT'),
+        'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
