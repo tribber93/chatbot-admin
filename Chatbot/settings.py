@@ -158,6 +158,11 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+BROKER_URL = f"redis://127.0.0.1:6379"
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_EXTENDED = True
+CELERY_worker_state_db = True
+CELERY_result_persistent=True
 
 # django setting.
 # CACHES = {
