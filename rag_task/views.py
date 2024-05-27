@@ -31,10 +31,13 @@ def chat(request):
             "answer": result['answer']
         }
         
+        tidak_tahu = "Maaf saya tidak tahu"
+        
         if result['context'] != []:
-            doc_id = result['context'][0].metadata['id']
-            
-            FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+            if tidak_tahu != result['answer'].split(',')[0]:
+                doc_id = result['context'][0].metadata['id']
+                
+                FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
             
         return JsonResponse(output)
     

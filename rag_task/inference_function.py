@@ -13,7 +13,7 @@ retriever = create_retriever()
 template = """
 kamu adalah asisten virtual untuk membantu memberikan informasi akademik di Universitas Catur Insan Cendekia
 jawab pertanyaan berdasarkan konteks yang diberikan dengan response seperti percakapan.
-Jika pertanyaan tidak dapat dijawab atau tidak ada dalam CONTEXT, maka cukup menjawab "Maaf saya tidak tahu, silakan hubungi info@cic.ac.id untuk informasi lebih lanjut".
+Jika pertanyaan tidak dapat dijawab atau tidak ada dalam CONTEXT, maka cukup menjawab "Maaf saya tidak tahu, silakan hubungi info@cic.ac.id untuk informasi lebih lanjut.".
 
 CONTEXT: {context}
 

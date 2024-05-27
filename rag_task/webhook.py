@@ -73,10 +73,14 @@ def make_rag_request(message, from_number):
         result = chain_with_source.invoke(message)
         response = result['answer']
         
+        tidak_tahu = "Maaf saya tidak tahu"
+        
         if result['context'] != []:
-            doc_id = result['context'][0].metadata['id']
-            
-            FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+            if tidak_tahu not in result['answer'].split(','):
+                doc_id = result['context'][0].metadata['id']
+                
+                FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+                
         response_message = re.sub(r'\*\*(.*?)\*\*', r'*\1*', response)
         
         print(f"RAG response: {response_message}")
