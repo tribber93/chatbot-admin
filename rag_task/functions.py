@@ -25,7 +25,7 @@ store = create_kv_docstore(fs)
 
 qdrant_url = os.getenv("QDRANT_URL")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
-collection_name = 'test'
+collection_name = os.getenv("COLLECTION_NAME")
 
 client = MyVectorDatabase(qdrant_url, qdrant_api_key, collection_name)
 vector_db = client.vector_store(hf_embeddings)
