@@ -8,12 +8,13 @@ from langchain.storage import LocalFileStore
 from langchain.storage._lc_store import create_kv_docstore
 
 output_parser = StrOutputParser()
+# llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 llm = ChatGoogleGenerativeAI(model="gemini-pro")
 retriever = create_retriever()
 template = """
-kamu adalah asisten virtual untuk membantu memberikan informasi akademik di Universitas Catur Insan Cendekia
-jawab pertanyaan berdasarkan konteks yang diberikan dengan response seperti percakapan.
-Jika pertanyaan tidak dapat dijawab atau tidak ada dalam CONTEXT, maka cukup menjawab "Maaf saya tidak tahu, silakan hubungi info@cic.ac.id untuk informasi lebih lanjut.".
+kamu adalah asisten virtual untuk membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
+jawab pertanyaan hanya berdasarkan konteks yang diberikan dengan response seperti percakapan.
+Jika pertanyaan tidak dapat dijawab atau tidak ada dalam CONTEXT, maka cukup menjawab "Maaf saya tidak tahu, silakan hubungi info@cic.ac.id untuk informasi lebih lanjut" atau arahkan untuk membuat pertanyaan yang lebih jelas.
 
 CONTEXT: {context}
 
@@ -41,7 +42,8 @@ def chain():
 
 def chain_with_source():
     rag_chain_from_docs = (
-        RunnablePassthrough.assign(context=(lambda x: format_docs(x["context"])))
+        # RunnablePassthrough.assign(context=(lambda x: format_docs(x["context"])))
+        RunnablePassthrough.assign()
         | prompt
         | llm
         | StrOutputParser()

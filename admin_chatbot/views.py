@@ -114,6 +114,7 @@ def deletePDF(request, id):
     messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
     return redirect('kelola-dokumen')
 
+@login_required
 def dashboard_chart(request):
     data = FileUpload.objects.all()
     top_5 = FileUpload.objects.order_by('-count_retrieved')[:5]
@@ -130,3 +131,14 @@ def dashboard_chart(request):
     }
     
     return JsonResponse(chart_data)
+
+@login_required
+def get_docs_data(request):
+    file_uploads = FileUpload.objects.select_related('task_result').all().values()
+    
+    for item in file_uploads:
+        task_results = TaskResult.objects.filter(id=item['task_result_id']).values('status')
+        item['status'] = task_results[0]['status']
+    
+    items_list = list(file_uploads)
+    return JsonResponse(items_list, safe=False)

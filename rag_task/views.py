@@ -28,7 +28,7 @@ def chat(request):
         
         output = {
             "question": query,
-            "answer": result['answer']
+            "answer": result['answer'],
         }
         
         tidak_tahu = "Maaf saya tidak tahu"
