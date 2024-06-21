@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import ValidationError, fields
+from django.conf import settings
 
 from .models import FileUpload
 
@@ -12,9 +13,10 @@ class LoginForm(forms.Form):
                     widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder':'Password'})
                 )
 class UploadForm(forms.ModelForm):
-    file_path = forms.FileField(label='Pilih file .pdf', 
-                                widget=forms.ClearableFileInput(attrs={'class': 'form-control mt-3', 'accept': '.pdf'}),
-                                help_text='Maksimal ukuran file 10MB, format .pdf',
+    ext = ", ".join(settings.ALLOWED_EXTENSIONS)
+    file_path = forms.FileField(label='Pilih file', 
+                                widget=forms.ClearableFileInput(attrs={'class': 'form-control mt-3', 'accept': ext}),
+                                help_text=f'Maksimal ukuran file 5MB, format {ext}',
                                 )# Tambahkan atribut accept untuk membatasi jenis file yang dapat diunggah
  
     class Meta:

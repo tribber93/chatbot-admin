@@ -178,3 +178,5 @@ SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 ASGI_APPLICATION = 'Chatbot.asgi.application'
+# Daftar ekstensi file yang diizinkan
+ALLOWED_EXTENSIONS = [".doc", ".docx", ".jpg", ".jpeg", ".png", ".md", ".pdf"]

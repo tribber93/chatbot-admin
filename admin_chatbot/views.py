@@ -79,12 +79,13 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         return context
     
     def form_valid(self, form):
+        
         file = form.cleaned_data['file_path']
-        if not file.name.endswith('.pdf'):
-            messages.error(self.request, 'File harus berformat PDF!')
+        if not any(file.name.endswith(ext) for ext in settings.ALLOWED_EXTENSIONS):
+            messages.error(self.request, f'File harus berformat salah satu dari: {", ".join(settings.ALLOWED_EXTENSIONS)}!')
             return self.form_invalid(form)
-        if file.size > 10 * 1024 * 1024:
-            messages.error(self.request, 'Ukuran file tidak boleh lebih dari 10 MB!')
+        if file.size > 5 * 1024 * 1024:
+            messages.error(self.request, 'Ukuran file tidak boleh lebih dari 5 MB!')
             return self.form_invalid(form)
         if FileUpload.objects.filter(file_name=file.name).exists():
             messages.error(self.request, 'File dengan nama yang sama sudah ada!')
