@@ -28,10 +28,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app', '192.168.2.3']
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'http://192.168.2.3', 'http://127.0.0.1']
+ALLOWED_HOSTS = ['chatbot.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'https://chatbot.tribber.me', 'http://127.0.0.1']
 
 # Application definition
 
