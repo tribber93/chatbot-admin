@@ -8,7 +8,7 @@ import regex as re
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from admin_chatbot.models import FileUpload
-from rag_task.inference_function import chain_with_source
+from rag_task.inference_function import chain_with_source, is_unanswerable_response
 from django.db.models import F
 
 chain_with_source = chain_with_source()
@@ -73,10 +73,8 @@ def make_rag_request(message, from_number):
         result = chain_with_source.invoke(message)
         response = result['answer']
         
-        tidak_tahu = "Maaf saya tidak tahu"
-        
         if result['context'] != []:
-            if tidak_tahu not in result['answer'].split(','):
+            if not is_unanswerable_response(result['answer']):
                 doc_id = result['context'][0].metadata['id']
                 
                 FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)

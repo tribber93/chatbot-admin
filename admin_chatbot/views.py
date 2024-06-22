@@ -58,7 +58,7 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
     form_class = UploadForm
     template_name = "kelola_dokumen.html"
     success_url = reverse_lazy("kelola-dokumen")
-    paginate_by = 10
+    paginate_by = 3
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,12 +79,13 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         return context
     
     def form_valid(self, form):
+        
         file = form.cleaned_data['file_path']
-        if not file.name.endswith('.pdf'):
-            messages.error(self.request, 'File harus berformat PDF!')
+        if not any(file.name.endswith(ext) for ext in settings.ALLOWED_EXTENSIONS):
+            messages.error(self.request, f'File harus berformat salah satu dari: {", ".join(settings.ALLOWED_EXTENSIONS)}!')
             return self.form_invalid(form)
-        if file.size > 10 * 1024 * 1024:
-            messages.error(self.request, 'Ukuran file tidak boleh lebih dari 10 MB!')
+        if file.size > 5 * 1024 * 1024:
+            messages.error(self.request, 'Ukuran file tidak boleh lebih dari 5 MB!')
             return self.form_invalid(form)
         if FileUpload.objects.filter(file_name=file.name).exists():
             messages.error(self.request, 'File dengan nama yang sama sudah ada!')
@@ -114,6 +115,7 @@ def deletePDF(request, id):
     messages.success(request, f'File {pdf_data.file_name} berhasil dihapus!')
     return redirect('kelola-dokumen')
 
+@login_required
 def dashboard_chart(request):
     data = FileUpload.objects.all()
     top_5 = FileUpload.objects.order_by('-count_retrieved')[:5]
@@ -130,3 +132,32 @@ def dashboard_chart(request):
     }
     
     return JsonResponse(chart_data)
+
+@login_required
+def get_docs_data(request):
+    page = request.GET.get('page', 1)
+    per_page = 10  # Jumlah item per halaman
+    file_uploads = FileUpload.objects.select_related('task_result').order_by('-uploaded_at').all().values()
+    
+    paginator = Paginator(file_uploads, per_page)
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+    
+    for item in items:
+        task_results = TaskResult.objects.filter(id=item['task_result_id']).values('status')
+        item['status'] = task_results[0]['status']
+    
+    items_list = list(items)
+    
+    response = {
+        'items': items_list,
+        'num_pages': paginator.num_pages,
+        'current_page': items.number,
+        'has_next': items.has_next(),
+        'has_previous': items.has_previous(),
+    }
+    return JsonResponse(response, safe=False)

@@ -8,12 +8,13 @@ from langchain.storage import LocalFileStore
 from langchain.storage._lc_store import create_kv_docstore
 
 output_parser = StrOutputParser()
-llm = ChatGoogleGenerativeAI(model="gemini-pro")
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+# llm = ChatGoogleGenerativeAI(model="gemini-pro")
 retriever = create_retriever()
 template = """
-kamu adalah asisten virtual untuk membantu memberikan informasi akademik di Universitas Catur Insan Cendekia
-jawab pertanyaan berdasarkan konteks yang diberikan dengan response seperti percakapan.
-Jika pertanyaan tidak dapat dijawab atau tidak ada dalam CONTEXT, maka cukup menjawab "Maaf saya tidak tahu, silakan hubungi info@cic.ac.id untuk informasi lebih lanjut.".
+kamu adalah asisten virtual yang ramah untuk membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
+jawab pertanyaan hanya berdasarkan konteks yang diberikan.
+Jika pertanyaan tidak dapat dijawab atau tidak ada dalam CONTEXT, jawab dengan kalimat bahwa pertanyaan yang diajukan tidak tersedia dalam dokumen yang diberikan dan jawab dengan sopan
 
 CONTEXT: {context}
 
@@ -41,7 +42,8 @@ def chain():
 
 def chain_with_source():
     rag_chain_from_docs = (
-        RunnablePassthrough.assign(context=(lambda x: format_docs(x["context"])))
+        # RunnablePassthrough.assign(context=(lambda x: format_docs(x["context"])))
+        RunnablePassthrough.assign()
         | prompt
         | llm
         | StrOutputParser()
@@ -52,3 +54,18 @@ def chain_with_source():
     ).assign(answer=rag_chain_from_docs)
     
     return rag_chain_with_source
+
+def is_unanswerable_response(response):
+    # Daftar kata kunci yang menunjukkan ketidakmampuan menjawab
+    keywords = [
+        # "Maaf", "tidak tersedia", "tidak bisa", "tidak ada informasi", 
+        # "tidak ditemukan", "informasi tidak", "belum ada informasi", 
+        # "tidak diketahui", "tidak dapat"
+        "tidak tersedia dalam dokumen yang diberikan"
+    ]
+    
+    # Memeriksa apakah salah satu kata kunci ada dalam respon
+    for keyword in keywords:
+        if keyword.lower() in response.lower():
+            return True
+    return False

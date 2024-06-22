@@ -77,167 +77,146 @@
         <div class="card">
             <h5 class="card-header">List Dokumen</h5>
             <div class="table-responsive text-nowrap">
-                <table class="table">
+                <table class="table" id="file-info">
                     <thead>
                         <tr class="text-nowrap">
                             <th>#</th>
                             <th>Nama File</th>
                             <th>Waktu Upload</th>
+                            <th>Digunakan</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for file in files %}
-                            <tr>
-                                <td>{{ files.start_index|add:forloop.counter0 }}</td>
-                                <!-- Nomor urut -->
-                                <td>{{ file.file_name }}</td>
-                                <!-- Nama file -->
-                                <td>{{ file.uploaded_at }}</td>
-                                <td>
-                                    {% if file.task_result != null %}
-                                        {% if file.task_result.status == "SUCCESS" %}
-                                            <button class="btn btn-success" type="button" disabled>
-                                                <!-- <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> -->
-                                                <i class='bx bx-check'></i>
-                                                <span role="status">Done</span>
-                                            </button>
-                                        {% elif file.task_result.status == "FAILURE" %}
-                                            <button class="btn btn-danger" type="button" disabled>
-                                                <i class='bx bx-x'></i>
-                                                <span role="status">Failed</span>
-                                            </button>
-                                        {% else %}
-                                            <button class="btn btn-primary" type="button" disabled>
-                                                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                                                <span role="status">Loading...</span>
-                                            </button>
-                                        {% endif %}
-                                    {% else %}
-                                        <button class="btn btn-danger" type="button" disabled>
-                                            <i class='bx bx-x'></i>
-                                            <span role="status">Failed</span>
-                                        </button>
-                                    {% endif %}
-                                </td>
-                                <!-- Waktu upload -->
-                                <td>
-                                    <div class="dropdown">
-                                        <button type="button"
-                                                class="btn p-0 dropdown-toggle hide-arrow"
-                                                data-bs-toggle="dropdown">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="{{ file.file_path.url }}" target="_blank">
-                                                <i class='bx bx-book-open'></i> Lihat
-                                            </a>
-                                            <form action="{% url 'delete_file' file.id %}"
-                                                  method="post"
-                                                  class="d-inline"
-                                                  id="deletepdf">
-                                                {% csrf_token %}
-                                                <button class="dropdown-item"
-                                                        type="submit"
-                                                        {% if file.task_result.status == 'STARTED' %}disabled{% endif %}
-                                                        onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
-                                                    <i class='bx bx-trash'></i> Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </td>
-                                <!-- Waktu upload -->
-                            </tr>
-                        {% endfor %}
                     </tbody>
+                    <div id="pagination-container" class="pagination m-3"></div> <!-- Container untuk pagination -->
                 </table>
+                <p id="no-data-message" style="display: none; text-align: center; margin-top: 5px;">Data tidak tersedia.</p>
             </div>
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-end m-3">
-                    {% if files.has_previous %}
-                        <li class="page-item prev">
-                            <a class="page-link" href="?page={{ files.previous_page_number }}"><i class="tf-icon bx bx-chevrons-left"></i></a>
-                        </li>
-                    {% endif %}
-                    
-                    {% if files.paginator.num_pages > 4 %}
-                        {% if files.number > 2 %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1">1</a>
-                            </li>
-                            <li class="page-item disabled">
-                                <span class="page-link">...</span>
-                            </li>
-                            {% for num in files.paginator.page_range %}
-                                {% if num > files.number|add:-2 and num < files.number|add:2 %}
-                                    <li class="page-item {% if files.number == num %}active{% endif %}">
-                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                            {% if files.number|add:2 < files.paginator.num_pages %}
-                                <li class="page-item disabled">
-                                    <span class="page-link">...</span>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ files.paginator.num_pages }}">{{ files.paginator.num_pages }}</a>
-                                </li>
-                            {% endif %}
-                        {% else %}
-                            {% for num in files.paginator.page_range %}
-                                {% if num < 4 %}
-                                    <li class="page-item {% if files.number == num %}active{% endif %}">
-                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                            {% if files.paginator.num_pages > 4 %}
-                                <li class="page-item disabled">
-                                    <span class="page-link">...</span>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ files.paginator.num_pages }}">{{ files.paginator.num_pages }}</a>
-                                </li>
-                            {% endif %}
-                        {% endif %}
-                    {% else %}
-                        {% for num in files.paginator.page_range %}
-                            <li class="page-item {% if files.number == num %}active{% endif %}">
-                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                            </li>
-                        {% endfor %}
-                    {% endif %}
-                    
-                    {% if files.has_next %}
-                        <li class="page-item next">
-                            <a class="page-link" href="?page={{ files.next_page_number }}"><i class="tf-icon bx bx-chevrons-right"></i></a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            
-            <!-- <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-end m-3">
-                    {% if files.has_previous %}
-                        <li class="page-item prev">
-                            <a class="page-link" href="?page={{ files.previous_page_number }}"><i class="tf-icon bx bx-chevrons-left"></i></a>
-                        </li>
-                    {% endif %}
-                    {% for num in files.paginator.page_range %}
-                        <li class="page-item {% if files.number == num %}active{% endif %}">
-                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                        </li>
-                    {% endfor %}
-                    {% if files.has_next %}
-                        <li class="page-item next">
-                            <a class="page-link" href="?page={{ files.next_page_number }}"><i class="tf-icon bx bx-chevrons-right"></i></a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav> -->
         </div>
         <!--/ Responsive Table -->
     </div>
+{% endblock %}
+{% block custom_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+    <script>
+        var currentPage = 1;
+        var totalPages = 1;
+        function formatDate(dateString) {
+            var options = { year: 'numeric', month: 'long', day: '2-digit' };
+            var date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', options).split('/').reverse().join('-');
+        }
+
+        function getStatusButton(status) {
+            if (status === "SUCCESS") {
+                return `
+                    <button class="btn btn-success" type="button" disabled>
+                        <i class='bx bx-check'></i>
+                        <span role="status">Done</span>
+                    </button>
+                `;
+            } else if (status === "FAILURE") {
+                return `
+                    <button class="btn btn-danger" type="button" disabled>
+                        <i class='bx bx-x'></i>
+                        <span role="status">Failed</span>
+                    </button>
+                `;
+            } else {
+                return `
+                    <button class="btn btn-primary" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        <span role="status">Extracting...</span>
+                    </button>
+                `;
+            }
+        }
+
+        function getActionButtons(file) {
+            return `
+                <td>
+                    <div class="dropdown">
+                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                            <i class="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/media/${file.file_path}" target="_blank">
+                                <i class='bx bx-book-open'></i> Lihat
+                            </a>
+                            <form action="delete/${file.id}/" method="post" class="d-inline" id="deletepdf">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${getCSRFToken()}">
+                                <button class="dropdown-item" type="submit" ${file.status === 'STARTED' ? 'disabled' : ''} onclick="return confirm('Kamu yakin ingin menghapus file ${file.file_name}?');">
+                                    <i class='bx bx-trash'></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </td>
+            `;
+        }
+
+        function getCSRFToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+
+        function fetchFileRecords(page) {
+            $.ajax({
+                url: '/docs-data/',
+                method: 'GET',
+                data: { page: page },
+                success: function(response) {
+                    var tableBody = $('#file-info tbody');
+                    tableBody.empty();
+                    if (response.items.length === 0) {
+                        $('#no-data-message').show();
+                    } else {
+                        $('#no-data-message').hide();
+                        response.items.forEach(function(record, index) {
+                            var formattedDate = formatDate(record.uploaded_at);
+                            var statusButton = getStatusButton(record.status);
+                            var actionButtons = getActionButtons(record);
+                            var row = '<tr>' +
+                                '<td>' + ((response.current_page - 1) * 10 + index + 1) + '</td>' + // Menambahkan nomor urut
+                                '<td>' + record.file_name + '</td>' +
+                                '<td  align="center">' + formattedDate + '</td>' + // Menggunakan tanggal yang diformat
+                                '<td  align="center">' + record.count_retrieved + ' kali' + '</td>' +
+                                '<td>' + statusButton + '</td>' +
+                                actionButtons + // Menambahkan tombol aksi
+                                '</tr>';
+                            tableBody.append(row);
+                        });
+                        
+                        // Update pagination only if the total pages change
+                        if (totalPages !== response.num_pages) {
+                            totalPages = response.num_pages;
+                            //$('#pagination-container').twbsPagination('destroy');
+                            $('#pagination-container').twbsPagination({
+                                totalPages: totalPages,
+                                startPage: page,
+                                visiblePages: 5,
+                                onPageClick: function(event, page) {
+                                    currentPage = page;
+                                    fetchFileRecords(page);
+                                }
+                            });
+                        }
+                    }
+                },
+                error: function() {
+                    console.log('Failed to fetch file records.');
+                }
+            });
+        }
+
+        // Fetch records on page load
+        $(document).ready(function() {
+            fetchFileRecords(currentPage);
+            
+            setInterval(function() {
+                fetchFileRecords(currentPage);
+            }, 5000); // Refresh every 5 seconds
+        });
+    </script>
 {% endblock %}

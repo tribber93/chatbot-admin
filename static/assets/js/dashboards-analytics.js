@@ -517,7 +517,7 @@
     incomeChartConfig = {
       series: [
         {
-          data: [24, 21, 30, 22, 42, 26, 35, 29],
+          data: [1, 12, 3, 4, 5, 6, 17, 8],
         },
       ],
       chart: {
@@ -581,7 +581,16 @@
         },
       },
       xaxis: {
-        categories: ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        categories: [
+          "",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+          "Minggu",
+        ],
         axisBorder: {
           show: false,
         },
@@ -600,8 +609,8 @@
         labels: {
           show: false,
         },
-        min: 10,
-        max: 50,
+        min: 0,
+        max: 20,
         tickAmount: 4,
       },
     };
@@ -614,7 +623,7 @@
   // --------------------------------------------------------------------
   const weeklyExpensesEl = document.querySelector("#expensesOfWeek"),
     weeklyExpensesConfig = {
-      series: [65],
+      series: [43],
       chart: {
         width: 60,
         height: 60,

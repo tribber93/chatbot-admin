@@ -1,0 +1,63 @@
+{% for file in files %}
+<tr>
+    <td>{{ files.start_index|add:forloop.counter0 }}</td>
+    <!-- Nomor urut -->
+    <td>{{ file.file_name }}</td>
+    <!-- Nama file -->
+    <td>{{ file.uploaded_at }}</td>
+    <td>
+        {% if file.task_result != null %}
+            {% if file.task_result.status == "SUCCESS" %}
+                <button class="btn btn-success" type="button" disabled>
+                    <!-- <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> -->
+                    <i class='bx bx-check'></i>
+                    <span role="status">Done</span>
+                </button>
+            {% elif file.task_result.status == "FAILURE" %}
+                <button class="btn btn-danger" type="button" disabled>
+                    <i class='bx bx-x'></i>
+                    <span role="status">Failed</span>
+                </button>
+            {% else %}
+                <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <span role="status">Extracting...</span>
+                </button>
+            {% endif %}
+        {% else %}
+            <button class="btn btn-danger" type="button" disabled>
+                <i class='bx bx-x'></i>
+                <span role="status">Failed</span>
+            </button>
+        {% endif %}
+    </td>
+    <!-- Waktu upload -->
+    <td>
+        <div class="dropdown">
+            <button type="button"
+                    class="btn p-0 dropdown-toggle hide-arrow"
+                    data-bs-toggle="dropdown">
+                <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ file.file_path.url }}" target="_blank">
+                    <i class='bx bx-book-open'></i> Lihat
+                </a>
+                <form action="{% url 'delete_file' file.id %}"
+                      method="post"
+                      class="d-inline"
+                      id="deletepdf">
+                    {% csrf_token %}
+                    <button class="dropdown-item"
+                            type="submit"
+                            {% if file.task_result.status == 'STARTED' %}disabled{% endif %}
+                            onclick="return confirm('Kamu yakin ingin menghapus file {{ file.file_name }}?');">
+                        <i class='bx bx-trash'></i> Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </td>
+    <!-- Waktu upload -->
+</tr>
+{% endfor %}

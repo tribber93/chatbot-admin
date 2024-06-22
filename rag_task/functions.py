@@ -39,15 +39,18 @@ def delete_a_chunk_doc(file_path):
     print("count after", vector_db._collection.count())
 
 def create_retriever():
-    parent_splitter = RecursiveCharacterTextSplitter(chunk_size=1024)
-    child_splitter = RecursiveCharacterTextSplitter(chunk_size=256)
+    parent_splitter = RecursiveCharacterTextSplitter(chunk_size=3000)
+    child_splitter = RecursiveCharacterTextSplitter(chunk_size=512)
     # store = InMemoryStore()
+    fs = LocalFileStore("./docstore")
+    store = create_kv_docstore(fs)
 
     parent_retriever = ParentDocumentRetriever(
         vectorstore=vector_db,
         docstore=store,
         child_splitter=child_splitter,
         parent_splitter=parent_splitter,
+        search_kwargs={"k":2}
     )
     
     return parent_retriever

@@ -6,7 +6,7 @@ from celery import shared_task
 from admin_chatbot.models import FileUpload
 from django.db.models import F
 from django.http import JsonResponse
-from rag_task.inference_function import chain, chain_with_source
+from rag_task.inference_function import chain, chain_with_source, is_unanswerable_response
 from .functions import create_retriever
 from django.views.decorators.csrf import csrf_exempt
 
@@ -28,13 +28,11 @@ def chat(request):
         
         output = {
             "question": query,
-            "answer": result['answer']
+            "answer": result['answer'],
         }
         
-        tidak_tahu = "Maaf saya tidak tahu"
-        
         if result['context'] != []:
-            if tidak_tahu != result['answer'].split(',')[0]:
+            if not is_unanswerable_response(result['answer']):
                 doc_id = result['context'][0].metadata['id']
                 
                 FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
