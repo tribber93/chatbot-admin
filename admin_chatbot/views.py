@@ -58,7 +58,7 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
     form_class = UploadForm
     template_name = "kelola_dokumen.html"
     success_url = reverse_lazy("kelola-dokumen")
-    paginate_by = 10
+    paginate_by = 3
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -135,11 +135,29 @@ def dashboard_chart(request):
 
 @login_required
 def get_docs_data(request):
-    file_uploads = FileUpload.objects.select_related('task_result').all().values()
+    page = request.GET.get('page', 1)
+    per_page = 10  # Jumlah item per halaman
+    file_uploads = FileUpload.objects.select_related('task_result').order_by('-uploaded_at').all().values()
     
-    for item in file_uploads:
+    paginator = Paginator(file_uploads, per_page)
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+    
+    for item in items:
         task_results = TaskResult.objects.filter(id=item['task_result_id']).values('status')
         item['status'] = task_results[0]['status']
     
-    items_list = list(file_uploads)
-    return JsonResponse(items_list, safe=False)
+    items_list = list(items)
+    
+    response = {
+        'items': items_list,
+        'num_pages': paginator.num_pages,
+        'current_page': items.number,
+        'has_next': items.has_next(),
+        'has_previous': items.has_previous(),
+    }
+    return JsonResponse(response, safe=False)
