@@ -18,8 +18,12 @@
                                             </div>
                                         <span class="fw-semibold d-block mb-1 mx-2">Top dokumen 7 hari terakhir</span>
                                 </div>
+                              {% if top_7_days.message %}
+                                <p class="card-title mb-2 text-center">{{ top_7_days.message }}</p>
+                              {% else %}
                                 <h3 class="card-title mb-2">{{ top_7_days.count }} x</h3>
                                 <small class="fw-semibold">{{ top_7_days.file_name }}</small>
+                              {% endif %} 
                             </div>
                         </div>
                     </div>

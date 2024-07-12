@@ -14,6 +14,14 @@ def get_top_dokumen_last_7_days():
 
     # Grupkan berdasarkan file_upload dan hitung jumlah kemunculannya, lalu urutkan secara descending
     top_document = chat_data_last_7_days.values('file_upload_id').annotate(count=Count('file_upload_id')).order_by('-count').first()
+    
+    # Jika tidak ada data dalam rentang waktu tersebut, kembalikan None atau pesan lain yang sesuai
+    if not top_document:
+        top_document = {}
+        top_document["message"]= "Data Tidak Tersedia"
+        return top_document
+        # return {"message": "Tidak ada dokumen dalam 7 hari terakhir"}
+    
     file_id = top_document['file_upload_id']
     top_document['file_name'] = FileUpload.objects.get(id=file_id).file_name
     
