@@ -16,7 +16,7 @@ class UploadForm(forms.ModelForm):
     ext = ", ".join(settings.ALLOWED_EXTENSIONS)
     file_path = forms.FileField(label='Pilih file', 
                                 widget=forms.ClearableFileInput(attrs={'class': 'form-control mt-3', 'accept': ext}),
-                                help_text=f'Maksimal ukuran file 5MB, format {ext}',
+                                help_text=f'Maksimal ukuran file 3MB, format {ext}',
                                 )# Tambahkan atribut accept untuk membatasi jenis file yang dapat diunggah
  
     class Meta:

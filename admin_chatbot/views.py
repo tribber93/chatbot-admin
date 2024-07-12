@@ -94,8 +94,8 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
         if not any(file.name.endswith(ext) for ext in settings.ALLOWED_EXTENSIONS):
             messages.error(self.request, f'File harus berformat salah satu dari: {", ".join(settings.ALLOWED_EXTENSIONS)}!')
             return self.form_invalid(form)
-        if file.size > 5 * 1024 * 1024:
-            messages.error(self.request, 'Ukuran file tidak boleh lebih dari 5 MB!')
+        if file.size > 3 * 1024 * 1024:
+            messages.error(self.request, 'Ukuran file tidak boleh lebih dari 3 MB!')
             return self.form_invalid(form)
         if FileUpload.objects.filter(file_name=file.name).exists():
             messages.error(self.request, 'File dengan nama yang sama sudah ada!')
