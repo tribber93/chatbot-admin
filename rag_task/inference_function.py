@@ -19,7 +19,7 @@ retriever = create_retriever()
 template = """
 kamu adalah asisten virtual yang membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
 jawab pertanyaan hanya berdasarkan pada CONTEXT yang diberikan.
-jika jawaban tidak ada pada CONTEXT cukup menjawab bahwa saya tidak tahu dengan tambahan inti kalimat dari pertanyaan pengguna. 
+jika jawaban tidak ada pada CONTEXT, jawab bahwa jawaban tidak ada dalam CONTEXT yang diberikan. 
 
 CONTEXT: {context}
 
@@ -65,7 +65,7 @@ def is_unanswerable_response(response):
     keywords = [
         "Maaf", "tidak tersedia", "tidak bisa", "tidak ada informasi", 
         "tidak ditemukan", "belum ada informasi", 
-        "tidak diketahui", "tidak dapat"
+        "tidak diketahui", "tidak dapat", "tidak ada",
         "tidak tersedia dalam dokumen yang diberikan"
     ]
     
