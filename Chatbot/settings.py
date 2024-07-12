@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     
     'django_celery_results',
     'admin_chatbot',
-    # 'widget_tweaks',
+    'widget_tweaks',
     'rag_task',
     # 'rest_framework',
 ]

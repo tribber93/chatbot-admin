@@ -147,7 +147,8 @@
                             </a>
                             <form action="delete/${file.id}/" method="post" class="d-inline" id="deletepdf">
                                 <input type="hidden" name="csrfmiddlewaretoken" value="${getCSRFToken()}">
-                                <button class="dropdown-item" type="submit" ${file.status === 'STARTED' ? 'disabled' : ''} onclick="return confirm('Kamu yakin ingin menghapus file ${file.file_name}?');">
+                                <button class="dropdown-item" type="submit" onclick="return confirm('Kamu yakin ingin menghapus file ${file.file_name}?');">
+                                <!-- <button class="dropdown-item" type="submit" ${file.status === 'STARTED' ? 'disabled' : ''} onclick="return confirm('Kamu yakin ingin menghapus file ${file.file_name}?');"> -->
                                     <i class='bx bx-trash'></i> Hapus
                                 </button>
                             </form>
@@ -214,9 +215,9 @@
         $(document).ready(function() {
             fetchFileRecords(currentPage);
             
-            setInterval(function() {
-                fetchFileRecords(currentPage);
-            }, 5000); // Refresh every 5 seconds
+            // setInterval(function() {
+            //    fetchFileRecords(currentPage);
+            // }, 60000); // Refresh every 1 minute
         });
     </script>
 {% endblock %}

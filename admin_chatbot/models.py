@@ -18,7 +18,6 @@ supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
 class FileUpload(models.Model):
     file_name = models.CharField(max_length=255, default="NULL", unique=True)
     file_path = models.FileField(upload_to="documents/", default="NULL")
-    # total_used = models.IntegerField(default=0)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     task_result = models.OneToOneField(TaskResult, on_delete=models.CASCADE, null=True, blank=True)
     count_retrieved = models.IntegerField(default=0)
@@ -74,3 +73,8 @@ def process_ingest_data(sender, instance, created, **kwargs):
         # finally:
         #     return redirect('kelola-dokumen')
         
+class ChatHistory(models.Model):
+    file_upload = models.ForeignKey(FileUpload, on_delete=models.CASCADE, null=True, related_name='chat_history')
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_answered = models.BooleanField(default=False)

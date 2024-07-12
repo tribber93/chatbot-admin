@@ -7,13 +7,8 @@ from dotenv import load_dotenv
 import regex as re
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from admin_chatbot.models import FileUpload
-from rag_task.inference_function import chain_with_source, is_unanswerable_response
+from rag_task.inference_function import generate_chat
 from django.db.models import F
-
-chain_with_source = chain_with_source()
-
-load_dotenv()
 
 # Access token for your WhatsApp business account app
 whatsapp_token = os.getenv("WHATSAPP_TOKEN")
@@ -65,21 +60,9 @@ def remove_last_message_from_log(phone_number):
 
 # make request to RAG
 def make_rag_request(message, from_number):
-    try:
-        # data= {
-        #     "question": message
-        # }
-        # response = requests.post("http://admin.tribber.me/chat/", json=data).json()['answer']
-        result = chain_with_source.invoke(message)
-        response = result['answer']
-        
-        if result['context'] != []:
-            if not is_unanswerable_response(result['answer']):
-                doc_id = result['context'][0].metadata['id']
-                
-                FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
-                
-        response_message = re.sub(r'\*\*(.*?)\*\*', r'*\1*', response)
+    try:        
+        result = generate_chat(message, clean_response=True)        
+        response_message = result["answer"]
         
         print(f"RAG response: {response_message}")
         update_message_log(response_message, from_number, "assistant")

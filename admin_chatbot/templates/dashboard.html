@@ -10,16 +10,16 @@
                     <div class="col-md-12 col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="card-title d-flex align-items-center ">
                                     <div class="avatar flex-shrink-0">
                                         <img src="{% static 'assets/img/icons/unicons/chart-success.png' %}"
                                              alt="chart success"
                                              class="rounded" />
-                                    </div>
+                                            </div>
+                                        <span class="fw-semibold d-block mb-1 mx-2">Top dokumen 7 hari terakhir</span>
                                 </div>
-                                <span class="fw-semibold d-block mb-1">Profit</span>
-                                <h3 class="card-title mb-2">$12,628</h3>
-                                <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                                <h3 class="card-title mb-2">{{ top_7_days.count }} x</h3>
+                                <small class="fw-semibold">{{ top_7_days.file_name }}</small>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
 {% block custom_js %}
     <!-- Vendors JS -->
     <script src="{% static '/assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
-    <script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
     <!-- Doughnut chart -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {

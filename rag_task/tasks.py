@@ -10,8 +10,8 @@ retriever = create_retriever()
 def ingest_data(path, id: int):
     start_time = time.time()
     loader = UnstructuredFileLoader(file_path=path,
-                                    post_processors=[clean_extra_whitespace],
-                                    strategy="hi_res",
+                                    # post_processors=[clean_extra_whitespace],
+                                    # strategy="hi_res",
                                     )
     docs = loader.load()
     docs[0].metadata['id'] = id
