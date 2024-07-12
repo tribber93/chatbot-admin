@@ -30,7 +30,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app', '192.168.2.3']
+# ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app', '192.168.2.3']
+ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'http://192.168.2.3', 'http://127.0.0.1']
 
 # Application definition
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     
     'django_celery_results',
     'admin_chatbot',
-    # 'widget_tweaks',
+    'widget_tweaks',
     'rag_task',
     # 'rest_framework',
 ]

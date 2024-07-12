@@ -1,20 +1,27 @@
 import os
 import time
+import calendar
+import pytz
+from django.db.models.functions import TruncDay
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
 from django.views.generic import CreateView
+from django.utils.translation import gettext as _
 
 from django.contrib.auth.views import LoginView, LogoutView
+
+from admin_chatbot.functions import get_top_dokumen_last_7_days
 # import Chatbot
 # from Chatbot.settings import supabase
 from .forms import UploadForm
 
-from .models import FileUpload
+from .models import ChatHistory, FileUpload
 from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
@@ -40,9 +47,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         # Mendapatkan jumlah nilai dari kolom field_name
         top_5_retrieved = FileUpload.objects.order_by('-count_retrieved')[:5]
         total_count_retrieved = FileUpload.objects.aggregate(total=Sum('count_retrieved'))['total'] or 0
+        top_dokumen_last_7_days = get_top_dokumen_last_7_days()
+        
         context = {
             "top_5_retrieved": top_5_retrieved,
-            "total_retrieved":  total_count_retrieved
+            "total_retrieved":  total_count_retrieved,
+            "top_7_days": top_dokumen_last_7_days
         }
         
         return context
@@ -161,3 +171,41 @@ def get_docs_data(request):
         'has_previous': items.has_previous(),
     }
     return JsonResponse(response, safe=False)
+
+def get_chat_frequency_last_7_days(request):
+    today = timezone.now()
+    jakarta_timezone = pytz.timezone('Asia/Jakarta')
+    today_jakarta = today.astimezone(jakarta_timezone)
+    last_week = today_jakarta - timezone.timedelta(days=7)
+    
+    print(today_jakarta)
+    # Ambil data chat dalam rentang waktu 7 hari terakhir
+    chat_history_data = ChatHistory.objects.filter(timestamp__range=[last_week, today])
+    
+    # Buat dictionary dengan kunci sebagai tanggal dan nilai awal 0 untuk setiap hari dalam 7 hari terakhir
+    date_range = { (today_jakarta - timezone.timedelta(days=i)).date(): {'count': 0, 'day_name': ''} for i in range(8) }
+
+    # Perbarui dictionary dengan data dari query
+    for chat_record in chat_history_data:
+        local_time = chat_record.timestamp.astimezone(jakarta_timezone)
+        
+        # Ambil bagian tanggal dari timestamp yang sudah dikonversi
+        date = local_time.date()
+
+        # Tambahkan 1 untuk jumlah pesan pada tanggal tersebut di dalam dictionary
+        if date in date_range:
+            date_range[date]['count'] += 1
+
+    # Tambahkan nama hari dalam Bahasa Indonesia ke dalam dictionary
+    for date, data in date_range.items():
+        day_name = _(date.strftime('%A'))  # Menggunakan fungsi gettext untuk menerjemahkan nama hari
+        data['day_name'] = day_name
+
+    # Konversi dictionary ke list of tuples dan urutkan berdasarkan tanggal
+    chat_frequency_list = sorted(date_range.items())
+
+    # Siapkan data JSON untuk dikirim sebagai respons
+    json_data = [{'tanggal': date.strftime('%Y-%m-%d'), 'jumlah': data['count'], 'nama_hari': data['day_name']} for date, data in chat_frequency_list]
+
+    return JsonResponse(json_data, safe=False)
+

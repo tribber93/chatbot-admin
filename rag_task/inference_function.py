@@ -1,5 +1,10 @@
 from django.dispatch import receiver
+import regex as re
+from django.db.models import F
 from langchain_core.prompts import ChatPromptTemplate
+
+from admin_chatbot.functions import find_matching_context
+from admin_chatbot.models import ChatHistory, FileUpload
 from .functions import create_retriever#, base_retriever
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel
@@ -12,9 +17,9 @@ llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 # llm = ChatGoogleGenerativeAI(model="gemini-pro")
 retriever = create_retriever()
 template = """
-kamu adalah asisten virtual yang ramah untuk membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
-jawab pertanyaan hanya berdasarkan konteks yang diberikan.
-Jika pertanyaan tidak dapat dijawab atau tidak ada dalam CONTEXT, jawab dengan kalimat bahwa pertanyaan yang diajukan tidak tersedia dalam dokumen yang diberikan dan jawab dengan sopan
+kamu adalah asisten virtual yang membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
+jawab pertanyaan hanya berdasarkan pada CONTEXT yang diberikan.
+jika jawaban tidak ada pada CONTEXT cukup menjawab bahwa saya tidak tahu dengan tambahan inti kalimat dari pertanyaan pengguna. 
 
 CONTEXT: {context}
 
@@ -56,16 +61,48 @@ def chain_with_source():
     return rag_chain_with_source
 
 def is_unanswerable_response(response):
-    # Daftar kata kunci yang menunjukkan ketidakmampuan menjawab
+    # # Daftar kata kunci yang menunjukkan ketidakmampuan menjawab
     keywords = [
-        # "Maaf", "tidak tersedia", "tidak bisa", "tidak ada informasi", 
-        # "tidak ditemukan", "informasi tidak", "belum ada informasi", 
-        # "tidak diketahui", "tidak dapat"
+        "Maaf", "tidak tersedia", "tidak bisa", "tidak ada informasi", 
+        "tidak ditemukan", "belum ada informasi", 
+        "tidak diketahui", "tidak dapat"
         "tidak tersedia dalam dokumen yang diberikan"
     ]
     
-    # Memeriksa apakah salah satu kata kunci ada dalam respon
+    # # Memeriksa apakah salah satu kata kunci ada dalam respon
     for keyword in keywords:
         if keyword.lower() in response.lower():
             return True
     return False
+    # result = all(kata in response.lower() for kata in keywords)
+    
+    # return result
+
+def generate_chat(query, clean_response=False):
+    result = chain_with_source().invoke(query)
+        
+    output = {
+        "question": query,
+        "answer": result['answer'],
+    }
+    
+    if clean_response:
+        output["answer"] = re.sub(r'\*\*(.*?)\*\*', r'*\1*', output["answer"])
+    
+    if result['context'] != []:
+        is_answered = not is_unanswerable_response(output["answer"])
+        
+        if len(result['context']) == 2:
+            context = find_matching_context(query, result['context'][0], result['context'][1])
+            doc_id = context.metadata['id']
+        else:
+            context = result['context'][0]
+            doc_id = context.metadata['id']
+            
+        # if is_answered:
+        print(is_answered)
+        FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+            
+        ChatHistory.objects.create(message=query, file_upload_id=doc_id, is_answered=is_answered)
+        
+    return output
