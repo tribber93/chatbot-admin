@@ -9,7 +9,6 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('dashboard-data/', views.dashboard_chart, name='dashboard-data'),
     path('chat-frequency/', views.get_chat_frequency_last_7_days, name='chat-frequency'),
-    path('top-dokumen/', views.get_top_dokumen_last_7_days, name='top-dokumen'),
     path('docs-data/', views.get_docs_data, name='docs-data'),
     path('dashboard/kelola-dokumen/', KelolaDokumenView.as_view(), name='kelola-dokumen'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
