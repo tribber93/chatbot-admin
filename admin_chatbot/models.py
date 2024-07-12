@@ -74,7 +74,7 @@ def process_ingest_data(sender, instance, created, **kwargs):
         #     return redirect('kelola-dokumen')
         
 class ChatHistory(models.Model):
-    file_upload = models.ForeignKey(FileUpload, on_delete=models.CASCADE, null=True, related_name='chat_history')
+    file_upload = models.ForeignKey(FileUpload, on_delete=models.SET_NULL, null=True, related_name='chat_history')
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     is_answered = models.BooleanField(default=False)

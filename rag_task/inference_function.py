@@ -19,7 +19,7 @@ retriever = create_retriever()
 template = """
 kamu adalah asisten virtual yang membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
 jawab pertanyaan hanya berdasarkan pada CONTEXT yang diberikan.
-jika jawaban tidak ada pada CONTEXT, jawab bahwa jawaban tidak ada dalam CONTEXT yang diberikan. 
+jika jawaban tidak ada pada CONTEXT, respon dengan mengulang hal apa yang ditanyakan tidak ada dalam konteks yang diberikan. 
 
 CONTEXT: {context}
 
@@ -99,9 +99,9 @@ def generate_chat(query, clean_response=False):
             context = result['context'][0]
             doc_id = context.metadata['id']
             
-        # if is_answered:
-        print(is_answered)
-        FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
+        # print(is_answered)
+        if is_answered:
+            FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
             
         ChatHistory.objects.create(message=query, file_upload_id=doc_id, is_answered=is_answered)
         
