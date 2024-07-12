@@ -177,8 +177,7 @@ def get_chat_frequency_last_7_days(request):
     jakarta_timezone = pytz.timezone('Asia/Jakarta')
     today_jakarta = today.astimezone(jakarta_timezone)
     last_week = today_jakarta - timezone.timedelta(days=7)
-    
-    print(today_jakarta)
+
     # Ambil data chat dalam rentang waktu 7 hari terakhir
     chat_history_data = ChatHistory.objects.filter(timestamp__range=[last_week, today])
     
