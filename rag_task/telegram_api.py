@@ -9,7 +9,8 @@ from rag_task.inference_function import chain_with_source, generate_chat
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
-URL = "https://chatbot.tribber.me/getpost/"
+URL = "https://f31d-114-5-218-3.ngrok-free.app/getpost/"
+# URL = "https://chatbot.tribber.me/getpost/"
 
 def setwebhook(request):
   response = requests.post(TELEGRAM_API_URL+ "setWebhook?url=" + URL).json()
@@ -35,19 +36,18 @@ def handle_update(update):
   chat_id = update['message']['chat']['id']
   text = update['message']['text']
   if text == '/info':
-    top_5_file = FileUpload.objects.order_by('-count_retrieved')[:5]
-    str_top_5 = ""
-    for item in top_5_file:
-      str_top_5 += f"- {item.file_name} \n"
+    top_5_file = FileUpload.objects.order_by('-count_retrieved')[:10]
     
-    answer = ("Kamu bisa bertanya tentang informasi akademik dan non-akademik."
+    answer =  "Kamu bisa bertanya tentang informasi akademik dan non-akademik. " + \
               "Berikut merupakan beberapa contoh hal yang paling sering ditanyakan.\n\n"
-              f"{str_top_5}")
-      
+        
+    for file in top_5_file:
+        answer += f"- {file.file_name}\n"
+        
     send_message("sendMessage", {
         'chat_id': chat_id,
         'text': answer,
-        'parse_mode': 'Markdown',
+        # 'parse_mode': 'Markdown',
     })
   else:
     chat_result = generate_chat(text, clean_response=True)
