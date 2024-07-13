@@ -16,7 +16,6 @@ def setwebhook(request):
   
   # Set commands
   commands = [
-      {"command": "start", "description": "Mulai bot"},
       {"command": "info", "description": "Dapatkan informasi tentang bot"}
   ]
   requests.post(TELEGRAM_API_URL + "setMyCommands", json={"commands": commands})
