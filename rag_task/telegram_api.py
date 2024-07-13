@@ -9,8 +9,8 @@ from rag_task.inference_function import chain_with_source, generate_chat
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
-URL = "https://f31d-114-5-218-3.ngrok-free.app/getpost/"
-# URL = "https://chatbot.tribber.me/getpost/"
+# URL = "https://f31d-114-5-218-3.ngrok-free.app/getpost/"
+URL = "https://chatbot.tribber.me/getpost/"
 
 def setwebhook(request):
   response = requests.post(TELEGRAM_API_URL+ "setWebhook?url=" + URL).json()
