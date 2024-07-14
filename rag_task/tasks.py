@@ -9,7 +9,7 @@ import time
 def ingest_data(path, id: int):
     start_time = time.time()
     loader = UnstructuredFileLoader(file_path=path,
-                                    # post_processors=[clean_extra_whitespace],
+                                    post_processors=[clean_extra_whitespace],
                                     # strategy="hi_res",
                                     )
     docs = loader.load()
