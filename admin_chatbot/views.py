@@ -1,13 +1,10 @@
 import os
-import time
-import calendar
 import pytz
-from django.db.models.functions import TruncDay
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import TemplateView
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
@@ -17,15 +14,14 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.views import LoginView, LogoutView
 
 from admin_chatbot.functions import get_top_dokumen_last_7_days
-# import Chatbot
-# from Chatbot.settings import supabase
 from .forms import UploadForm
 
 from .models import ChatHistory, FileUpload
-from django.db.models import Sum, Count
+from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
-from rag_task.tasks import delete_from_vector_db_and_docstore
+# from rag_task.qdrantdb import delete_from_vector_db_and_docstore
+from rag_task.chromadb import delete_a_chunk_doc
 from django_celery_results.models import TaskResult
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -114,8 +110,11 @@ class KelolaDokumenView(LoginRequiredMixin, CreateView):
 def deletePDF(request, id):
     pdf_data = FileUpload.objects.get(id=id)
     path = pdf_data.file_path.path
-    # print(os.path.join(settings.MEDIA_ROOT, path))
-    delete_from_vector_db_and_docstore(os.path.join(settings.MEDIA_ROOT, path))
+    
+    ######### chromadb
+    delete_a_chunk_doc(os.path.join(settings.MEDIA_ROOT, path))
+    ######### qdrant 
+    # delete_from_vector_db_and_docstore(os.path.join(settings.MEDIA_ROOT, path))
     try:
         task = pdf_data.task_result_id
         TaskResult.objects.get(id=task).delete()

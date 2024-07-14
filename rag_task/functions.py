@@ -1,44 +1,20 @@
-import os
-from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.retrievers import ParentDocumentRetriever
-# from langchain_community.vectorstores import Chroma
-from dotenv import load_dotenv
 from langchain.storage import LocalFileStore
 from langchain.storage._lc_store import create_kv_docstore
 
-from rag_task.qdrantdb import MyVectorDatabase
-
-load_dotenv()
-
-hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
-    api_key=os.getenv('HF_TOKEN'), model_name="firqaaa/indo-sentence-bert-base" #"intfloat/multilingual-e5-base"
-)
-
 fs = LocalFileStore("./docstore")
 store = create_kv_docstore(fs)
-# vector_db = Chroma(
-#     collection_name="split_parents",
-#     embedding_function=hf_embeddings,
-#     persist_directory="./chroma_db"
-# )
 
-qdrant_url = os.getenv("QDRANT_URL")
-qdrant_api_key = os.getenv("QDRANT_API_KEY")
-collection_name = os.getenv('COLLECTION_NAME')
+# def delete_a_chunk_doc(file_path):
+#     ids = vector_db._collection.get(where={"source": file_path})['ids']
+#     if ids == []:
+#         return
+#     print("count before", vector_db._collection.count())
+#     vector_db._collection.delete(ids=ids)
+#     print("count after", vector_db._collection.count())
 
-client = MyVectorDatabase(qdrant_url, qdrant_api_key, collection_name)
-vector_db = client.vector_store(hf_embeddings)
-
-def delete_a_chunk_doc(file_path):
-    ids = vector_db._collection.get(where={"source": file_path})['ids']
-    if ids == []:
-        return
-    print("count before", vector_db._collection.count())
-    vector_db._collection.delete(ids=ids)
-    print("count after", vector_db._collection.count())
-
-def create_retriever():
+def create_retriever(vector_db):
     parent_splitter = RecursiveCharacterTextSplitter(chunk_size=3000)
     child_splitter = RecursiveCharacterTextSplitter(chunk_size=512)
     # store = InMemoryStore()
@@ -55,3 +31,11 @@ def create_retriever():
     
     return parent_retriever
 
+def get_a_docstore_ids(file_path):
+    docstore_ids = list(store.yield_keys())
+    ids = []
+    for idx, doc in enumerate(store.mget(docstore_ids)):
+        if doc.metadata['source'] == file_path:
+            ids.append(docstore_ids[idx])
+            
+    return ids
