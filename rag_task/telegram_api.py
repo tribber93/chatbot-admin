@@ -10,13 +10,14 @@ from rag_task.inference_function import chain_with_source, generate_chat
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TEST_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
-URL = "https://030b-180-251-229-58.ngrok-free.app/getpost/"
+URL = "https://c930-180-251-229-58.ngrok-free.app/getpost/"
 
 def setwebhook(request):
   response = requests.post(TELEGRAM_API_URL+ "setWebhook?url=" + URL).json()
   
   # Set commands
   commands = [
+      # {"command": "start", "description": "Selamat datang di UCIC Bot"},
       {"command": "info", "description": "Dapatkan informasi tentang bot"}
   ]
   requests.post(TELEGRAM_API_URL + "setMyCommands", json={"commands": commands})
@@ -35,7 +36,20 @@ def telegram_bot(request):
 def handle_update(update):
   chat_id = update['message']['chat']['id']
   text = update['message']['text']
-  if text == '/info':
+  if text =='/start':
+    answer = ("Hai! Terima kasih telah menghubungi UCIC Bot! 🤖\n"
+              "Saya siap membantu Anda mendapatkan informasi yang Anda butuhkan. Berikut beberapa topik yang bisa Anda tanyakan:\n\n"
+              "\t1. \t💵 Informasi Biaya\n"
+              "\t2. \t🎓 Layanan Akademik\n"
+              "\t3. \t🌐 Informasi Kampus\n"
+              "\t4. \t♾️ dan lain-lain\n\n"
+              "Selamat berinteraksi!\n")
+    send_message("sendMessage", {
+        'chat_id': chat_id,
+        'text': answer,
+        # 'parse_mode': 'Markdown',
+    })
+  elif text == '/info':
     top_5_file = FileUpload.objects.order_by('-count_retrieved')[:10]
     
     answer =  "Kamu bisa bertanya tentang informasi seperti hari libur, biaya kuliah, pendaftaran mahasiswa baru dan sebagainya.\n"

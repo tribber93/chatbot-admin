@@ -1,7 +1,11 @@
 
+import os
 from langchain_qdrant import Qdrant
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+from rag_task.functions import get_a_docstore_ids, store
+from rag_task.functions import create_retriever
 
 class MyVectorDatabase():
     def __init__(self, qdrant_url, qdrant_api_key, collection_name):
@@ -47,3 +51,28 @@ class MyVectorDatabase():
         ids = [record.id for record in records]
 
         return ids
+    
+def delete_from_vector_db_and_docstore(file_path):
+    store_ids = get_a_docstore_ids(file_path)
+    store.mdelete(store_ids)
+    
+    if client.count_all_chunk() != 0:
+        vector_ids = client.get_ids_a_document_chunk(file_path)
+        if len(vector_ids) != 0:
+            vector_db.delete(vector_ids)
+    # delete_a_chunk_doc(file_path)
+    return f"Data berhasil dihapus dari database"
+
+qdrant_url = os.getenv("QDRANT_URL")
+qdrant_api_key = os.getenv("QDRANT_API_KEY")
+collection_name = os.getenv("COLLECTION_NAME")
+
+hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
+    api_key=os.getenv('HF_TOKEN'), model_name="firqaaa/indo-sentence-bert-base" #"intfloat/multilingual-e5-base"
+)
+
+client = MyVectorDatabase(qdrant_url, qdrant_api_key, collection_name)
+vector_db = client.vector_store(hf_embeddings)
+
+
+retriever = create_retriever(vector_db)
