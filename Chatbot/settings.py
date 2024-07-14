@@ -85,18 +85,30 @@ WSGI_APPLICATION = 'Chatbot.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         # 'ENGINE': 'django.db.backends.mysql',
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.getenv('SUPA_DB_NAME'),
+#         'USER': os.getenv('SUPA_DB_USER'),
+#         'PASSWORD': os.getenv('SUPA_DB_PASSWORD'),
+#         'HOST': os.getenv('SUPA_DB_HOST'),
+#         'PORT': os.getenv('SUPA_DB_PORT'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('SUPA_DB_NAME'),
-        'USER': os.getenv('SUPA_DB_USER'),
-        'PASSWORD': os.getenv('SUPA_DB_PASSWORD'),
-        'HOST': os.getenv('SUPA_DB_HOST'),
-        'PORT': os.getenv('SUPA_DB_PORT'),
+        'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
