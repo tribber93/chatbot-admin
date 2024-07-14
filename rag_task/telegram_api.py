@@ -1,13 +1,14 @@
 import os
 import json
+import markdown
 import requests
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-
+from bs4 import BeautifulSoup
 from admin_chatbot.models import FileUpload
 from rag_task.inference_function import chain_with_source, generate_chat
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TEST_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
 # URL = "https://f31d-114-5-218-3.ngrok-free.app/getpost/"
 URL = "https://chatbot.tribber.me/getpost/"
@@ -50,12 +51,20 @@ def handle_update(update):
         # 'parse_mode': 'Markdown',
     })
   else:
-    chat_result = generate_chat(text, clean_response=True)
+    chat_result = generate_chat(text)
+    answer = markdown_to_text(chat_result['answer'])
     send_message("sendMessage", {
       'chat_id': chat_id,
-      'text': chat_result['answer'],
-      'parse_mode': 'Markdown',
+      'text': answer,
+      # 'parse_mode': 'Markdown',
     })
 
 def send_message(method, data):
   return requests.post(TELEGRAM_API_URL + method, data)
+
+def markdown_to_text(markdown_string):
+    # Convert markdown to HTML
+    html = markdown.markdown(markdown_string)
+    # Use BeautifulSoup to parse the HTML and extract text
+    soup = BeautifulSoup(html, 'html.parser')
+    return soup.get_text()
