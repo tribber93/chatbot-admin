@@ -1,4 +1,6 @@
+from bs4 import BeautifulSoup
 from django.dispatch import receiver
+import markdown
 import regex as re
 from django.db.models import F
 from langchain_core.prompts import ChatPromptTemplate
@@ -78,7 +80,18 @@ def is_unanswerable_response(response):
     
     # return result
 
-def generate_chat(query, clean_response=False):
+def generate_chat(query, clean_response=False, plain_text=False):
+    
+    """ Ini merupakan fungsi untuk menghasilkan teks dari pertanyaan pengguna
+    
+    Args:
+    query: merupakan input pertanyaan (str)
+    clean_response: digunakan untuk membersihkan teks output (bool)
+    plain_text: digunakan untuk menghasilkan output teks biasa (bool)
+
+    Returns:
+        Map: berisi question dan answer
+    """
     result = chain_with_source().invoke(query)
         
     output = {
@@ -88,6 +101,9 @@ def generate_chat(query, clean_response=False):
     
     if clean_response:
         output["answer"] = re.sub(r'\*\*(.*?)\*\*', r'*\1*', output["answer"])
+    
+    if plain_text:
+        output["answer"] = markdown_to_text(output["answer"])
     
     if result['context'] != []:
         is_answered = not is_unanswerable_response(output["answer"])
@@ -106,3 +122,11 @@ def generate_chat(query, clean_response=False):
         ChatHistory.objects.create(message=query, file_upload_id=doc_id, is_answered=is_answered)
         
     return output
+
+
+def markdown_to_text(markdown_string):
+    # Convert markdown to HTML
+    html = markdown.markdown(markdown_string)
+    # Use BeautifulSoup to parse the HTML and extract text
+    soup = BeautifulSoup(html, 'html.parser')
+    return soup.get_text()
