@@ -42,3 +42,5 @@ local_settings.py
 **/__pycache__
 *.pyc
 
+# models
+models/

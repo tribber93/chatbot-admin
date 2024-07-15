@@ -3,14 +3,15 @@ import chromadb
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from rag_task.functions import create_retriever, get_a_docstore_ids, store
+from rag_task.embeddings import hf_embeddings
 
 host = os.getenv("CHROMA_HOST")
 port = os.getenv("CHROMA_PORT")
 hf_token = os.getenv('HF_TOKEN')
 collection_name = os.getenv('COLLECTION_NAME')
-hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
-    api_key=os.getenv('HF_TOKEN'), model_name="firqaaa/indo-sentence-bert-base" #"intfloat/multilingual-e5-base"
-)
+# hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
+#     api_key=os.getenv('HF_TOKEN'), model_name="firqaaa/indo-sentence-bert-base" #"intfloat/multilingual-e5-base"
+# )
 
 chroma_client = chromadb.HttpClient(host=host, port=port)
 
