@@ -22,6 +22,7 @@ template = """
 kamu adalah asisten virtual yang membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
 jawab pertanyaan hanya berdasarkan pada CONTEXT yang diberikan.
 jika jawaban tidak ada pada CONTEXT, respon dengan mengulang hal apa yang ditanyakan tidak ada dalam konteks yang diberikan. 
+Jangan meresponse dalam format Markdown
 
 CONTEXT: {context}
 
@@ -102,13 +103,10 @@ def generate_chat(query, clean_response=False, plain_text=False):
     if clean_response:
         output["answer"] = re.sub(r'\*\*(.*?)\*\*', r'*\1*', output["answer"])
     
-    if plain_text:
-        output["answer"] = markdown_to_text(output["answer"])
-    
     if result['context'] != []:
         is_answered = not is_unanswerable_response(output["answer"])
         
-        if len(result['context']) == 2:
+        if len(result['context']) >= 2:
             context = find_matching_context(query, result['context'][0], result['context'][1])
             doc_id = context.metadata['id']
         else:
@@ -124,9 +122,29 @@ def generate_chat(query, clean_response=False, plain_text=False):
     return output
 
 
-def markdown_to_text(markdown_string):
+def markdown_to_text(markdown_string, html_format=False):
     # Convert markdown to HTML
-    html = markdown.markdown(markdown_string)
+    html_text = markdown.markdown(markdown_string)
     # Use BeautifulSoup to parse the HTML and extract text
-    soup = BeautifulSoup(html, 'html.parser')
-    return soup.get_text()
+    soup = BeautifulSoup(html_text, 'html.parser')
+    
+    # Get the text with list items preserved
+    if html_format:
+        return f"<html> \n\t{str(soup)}\n</html>"
+    else:
+        text_with_lists = extract_text_preserving_lists(soup)
+        return text_with_lists
+
+# Function to extract text while preserving list items
+def extract_text_preserving_lists(soup):
+    result = []
+    for element in soup.recursiveChildGenerator():
+        if element.name == 'li':
+            parent = element.find_parent(['ul', 'ol'])
+            if parent.name == 'ol':
+                result.append(f"{element.find_previous_siblings('li').count() + 1}. {element.get_text()}")
+            else:
+                result.append(f"- {element.get_text()}")
+        elif element.name in ['p', 'div'] and element.get_text(strip=True):
+            result.append(element.get_text())
+    return '\n'.join(result)

@@ -26,7 +26,7 @@ def create_retriever(vector_db):
         docstore=store,
         child_splitter=child_splitter,
         parent_splitter=parent_splitter,
-        search_kwargs={"k":2}
+        # search_kwargs={"k":2}
     )
     
     return parent_retriever
