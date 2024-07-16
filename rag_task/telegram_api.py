@@ -4,13 +4,12 @@ import markdown
 import requests
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from bs4 import BeautifulSoup
 from admin_chatbot.models import FileUpload
-from rag_task.inference_function import chain_with_source, generate_chat
+from rag_task.inference_function import chain_with_source, generate_chat, markdown_to_text
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TEST_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
-URL = "https://c930-180-251-229-58.ngrok-free.app/getpost/"
+URL = "https://3c44-180-251-229-58.ngrok-free.app/getpost/"
 
 def setwebhook(request):
   response = requests.post(TELEGRAM_API_URL+ "setWebhook?url=" + URL).json()
@@ -64,14 +63,16 @@ def handle_update(update):
     send_message("sendMessage", {
         'chat_id': chat_id,
         'text': answer,
-        'parse_mode': 'Markdown',
+        # 'parse_mode': 'Markdown',
     })
   else:
-    chat_result = generate_chat(text, plain_text=True)
+    chat_result = generate_chat(text)#, plain_text=True)
+    # chat_result["answer"] = markdown_to_text(chat_result["answer"])
+    
     send_message("sendMessage", {
       'chat_id': chat_id,
       'text': chat_result["answer"],
-      # 'parse_mode': 'Markdown',
+      # 'parse_mode': 'MarkdownV2',
     })
 
 def send_message(method, data):
