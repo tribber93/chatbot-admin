@@ -43,6 +43,7 @@ def handle_update(update):
               "\t2. \t🎓 Layanan Akademik\n"
               "\t3. \t🌐 Informasi Kampus\n"
               "\t4. \t♾️ dan lain-lain\n\n"
+              "Kamu juga bisa mengetik /info atau memilihnya pada tombol menu untuk mengetahui topik yang sering ditanyakan.\n"
               "Selamat berinteraksi!\n")
     send_message("sendMessage", {
         'chat_id': chat_id,
