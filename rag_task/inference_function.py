@@ -66,9 +66,10 @@ def chain_with_source():
 def is_unanswerable_response(response):
     # # Daftar kata kunci yang menunjukkan ketidakmampuan menjawab
     keywords = [
-        "Maaf", "tidak tersedia", "tidak bisa", "tidak ada informasi", 
-        "tidak ditemukan", "belum ada informasi", 
-        "tidak diketahui", "tidak dapat", "tidak ada",
+        "Maaf", "tidak tersedia",
+        # "tidak bisa", 
+        "tidak ada informasi", "tidak ditemukan", "belum ada informasi", 
+        # "tidak diketahui", "tidak dapat",
         "tidak tersedia dalam dokumen yang diberikan"
     ]
     
@@ -98,8 +99,10 @@ def generate_chat(query, clean_response=False, plain_text=False):
     output = {
         "question": query,
         "answer": result['answer'],
+        # "context": result['context'],
     }
     
+    print(result['context'])
     if clean_response:
         output["answer"] = re.sub(r'\*\*(.*?)\*\*', r'*\1*', output["answer"])
     
