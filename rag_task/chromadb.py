@@ -11,6 +11,7 @@ hf_token = os.getenv('HF_TOKEN')
 collection_name = os.getenv('COLLECTION_NAME')
 hf_embeddings = HuggingFaceInferenceAPIEmbeddings(
     api_key=os.getenv('HF_TOKEN'), model_name="firqaaa/indo-sentence-bert-base" #"intfloat/multilingual-e5-base"
+    # api_key=os.getenv('HF_TOKEN'), model_name="sentence-transformers/paraphrase-multilingual-mpnet-base-v2" #"intfloat/multilingual-e5-base"
 )
 
 chroma_client = chromadb.HttpClient(host=host, port=port)

@@ -42,3 +42,17 @@ def find_matching_context(output, context1, context2):
         return context2
     else:
         return context1
+    
+def find_best_context(output, contexts):
+    # # Pastikan ada setidaknya 2 context
+    # if len(contexts) < 2:
+    #     raise ValueError("Harus ada minimal 2 context untuk dibandingkan.")
+    
+    # Mulai dengan membandingkan dua context pertama
+    best_context = find_matching_context(output, contexts[0], contexts[1])
+
+    # Bandingkan dengan context lainnya jika ada lebih dari 2
+    for i in range(2, len(contexts)):
+        best_context = find_matching_context(output, best_context, contexts[i])
+
+    return best_context

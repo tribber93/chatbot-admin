@@ -15,7 +15,9 @@ store = create_kv_docstore(fs)
 #     print("count after", vector_db._collection.count())
 
 def create_retriever(vector_db):
-    parent_splitter = RecursiveCharacterTextSplitter(chunk_size=3000)
+    # parent_splitter = RecursiveCharacterTextSplitter(chunk_size=3000)
+    # child_splitter = RecursiveCharacterTextSplitter(chunk_size=512)
+    parent_splitter = RecursiveCharacterTextSplitter(chunk_size=4096)
     child_splitter = RecursiveCharacterTextSplitter(chunk_size=512)
     # store = InMemoryStore()
     fs = LocalFileStore("./docstore")

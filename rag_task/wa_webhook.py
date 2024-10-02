@@ -9,6 +9,8 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rag_task.inference_function import generate_chat
 from django.db.models import F
+from admin_chatbot.models import WhatsAppContact
+from rag_task.wa_template import get_current_greeting, info, save_whatsapp_contact
 
 # Access token for your WhatsApp business account app
 whatsapp_token = os.getenv("WHATSAPP_TOKEN")
@@ -28,7 +30,7 @@ def send_whatsapp_message(body, message):
         "Authorization": f"Bearer {whatsapp_token}",
         "Content-Type": "application/json",
     }
-    url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages"
+    url = "https://graph.facebook.com/v20.0/" + phone_number_id + "/messages"
     data = {
         "messaging_product": "whatsapp",
         "to": from_number,
@@ -61,10 +63,10 @@ def remove_last_message_from_log(phone_number):
 # make request to RAG
 def make_rag_request(message, from_number):
     try:        
-        result = generate_chat(message, clean_response=True)        
+        result = generate_chat(message)        
         response_message = result["answer"]
         
-        print(f"RAG response: {response_message}")
+        # print(f"RAG response: {response_message}")
         update_message_log(response_message, from_number, "assistant")
     except Exception as e:
         print(f"RAG error: {e}")
@@ -75,11 +77,29 @@ def make_rag_request(message, from_number):
 
 # handle WhatsApp messages of different type
 def handle_whatsapp_message(body):
+    # print(f"request body: {body}")
     message = body["entry"][0]["changes"][0]["value"]["messages"][0]
+    name =  body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
+    phone_number = message["from"]
+    
+    # Mengecek apakah nomor ada di database
+    contact_exists = WhatsAppContact.objects.filter(phone_number=phone_number).exists()
+    # print(f"dengan nama {name}")
     if message["type"] == "text":
         message_body = message["text"]["body"]
-    response = make_rag_request(message_body, message["from"])
-    send_whatsapp_message(body, response)
+        
+            
+        if message_body.lower() == "/info":
+            response = info()
+        else:
+            response = make_rag_request(message_body, phone_number)
+            
+        if not contact_exists:
+            save_whatsapp_contact(name, phone_number)
+            greeting_response = get_current_greeting(name)
+            send_whatsapp_message(body, greeting_response)
+            
+        send_whatsapp_message(body, response)
 
 
 # handle incoming webhook messages

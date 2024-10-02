@@ -78,3 +78,14 @@ class ChatHistory(models.Model):
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     is_answered = models.BooleanField(default=False)
+    
+class WhatsAppContact(models.Model):
+    wa_id = models.CharField(max_length=20, unique=True)  # ID WhatsApp unik
+    name = models.CharField(max_length=255)  # Nama pengguna
+    phone_number = models.CharField(max_length=16)  # Nomor WA
+
+    created_at = models.DateTimeField(auto_now_add=True)  # Waktu penyimpanan data pertama kali
+    updated_at = models.DateTimeField(auto_now=True)  # Waktu update terakhir data
+
+    def __str__(self):
+        return f"{self.name} ({self.phone_number})"

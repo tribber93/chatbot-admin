@@ -6,7 +6,7 @@ import regex as re
 from django.db.models import F
 from langchain_core.prompts import ChatPromptTemplate
 
-from admin_chatbot.functions import find_matching_context
+from admin_chatbot.functions import find_best_context
 from admin_chatbot.models import ChatHistory, FileUpload
 from rag_task.functions import create_retriever#, base_retriever
 from langchain_core.output_parsers import StrOutputParser
@@ -18,11 +18,16 @@ from rag_task.chromadb import retriever
 output_parser = StrOutputParser()
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 
+# kamu adalah asisten virtual yang membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
+# jawab pertanyaan hanya berdasarkan pada CONTEXT yang diberikan.
+# jika jawaban tidak ada pada CONTEXT, respon dengan maaf dan mengulang inti dari apa yang ditanyakan tidak ada dalam konteks yang diberikan dengan emot 🙏.
+# Jangan meresponse dalam format Markdown
+
+# Kamu adalah asisten virtual yang ramah. Kamu bisa membantu memberikan informasi di Kota/Kabupaten Tegal.
 template = """
-kamu adalah asisten virtual yang membantu memberikan informasi akademik dan non-akademik di Universitas Catur Insan Cendekia
+Anda adalah asisten virtual bernama Tegal-Bot, ditugaskan untuk menyediakan layanan informasi mengenai daerah Tegal kepada masyarakat. Anda harus menjawab pertanyaan terkait berbagai layanan dan informasi penting di daerah tersebut dengan jelas, tepat, dan sopan.
 jawab pertanyaan hanya berdasarkan pada CONTEXT yang diberikan.
-jika jawaban tidak ada pada CONTEXT, respon dengan mengulang hal apa yang ditanyakan tidak ada dalam konteks yang diberikan. 
-Jangan meresponse dalam format Markdown
+jika jawaban tidak ada pada CONTEXT, respon dengan mengulang hal apa yang ditanyakan tidak ada dalam konteks yang diberikan. dan beri emoji "🙏" jika pertanyaan tidak terjawab
 
 CONTEXT: {context}
 
@@ -66,7 +71,7 @@ def chain_with_source():
 def is_unanswerable_response(response):
     # # Daftar kata kunci yang menunjukkan ketidakmampuan menjawab
     keywords = [
-        "Maaf", "tidak tersedia",
+        "Maaf", "tidak tersedia", "halo",
         # "tidak bisa", 
         "tidak ada informasi", "tidak ditemukan", "belum ada informasi", 
         # "tidak diketahui", "tidak dapat",
@@ -102,21 +107,25 @@ def generate_chat(query, clean_response=False, plain_text=False):
         # "context": result['context'],
     }
     
-    print(result['context'])
+    # print(result['context'])
     if clean_response:
         output["answer"] = re.sub(r'\*\*(.*?)\*\*', r'*\1*', output["answer"])
     
     if result['context'] != []:
         is_answered = not is_unanswerable_response(output["answer"])
         
+        # print(len(result['context']))
         if len(result['context']) >= 2:
-            context = find_matching_context(query, result['context'][0], result['context'][1])
+            context = find_best_context(result["answer"], result['context'])
             doc_id = context.metadata['id']
+            # print(f"if {doc_id}")
         else:
             context = result['context'][0]
             doc_id = context.metadata['id']
+            # print(f"else {doc_id}")
             
         # print(is_answered)
+        # print(result['context'])
         if is_answered:
             FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
             
