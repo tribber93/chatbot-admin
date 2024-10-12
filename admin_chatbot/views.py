@@ -16,6 +16,7 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.views import LoginView, LogoutView
 
 from admin_chatbot.functions import get_top_dokumen_last_7_days
+from admin_chatbot.signal import restart_gunicorn
 from .forms import UploadForm, WhatsAppTokenForm
 
 from .models import ChatHistory, FileUpload
@@ -83,7 +84,8 @@ class SetToken(LoginRequiredMixin, FormView):
                 messages.success(self.request, 'Token berhasil diunggah dan disimpan di file .env!')
                 
                 # Restart server Django
-                os.execv(sys.executable, ['python'] + sys.argv)
+                # os.execv(sys.executable, ['python'] + sys.argv)
+                restart_gunicorn()  # Restart Gunicorn
             except Exception as e:
                 messages.error(self.request, f'Gagal menyimpan token: {str(e)}')
         else:
