@@ -33,7 +33,7 @@ def get_current_greeting(name):
 def info():
     top_5_file = FileUpload.objects.order_by('-count_retrieved')[:10]
     
-    answer =  "Kamu bisa bertanya tentang informasi seperti hari libur, biaya kuliah, pendaftaran mahasiswa baru dan sebagainya.\n"
+    answer =  "Kamu bisa bertanya tentang informasi mengenai kota tegal.\n"
     
     if top_5_file != []:
         answer += "Berikut merupakan beberapa contoh hal yang paling sering ditanyakan.\n\n"
