@@ -1,20 +1,22 @@
 import os
+import sys
+from dotenv import set_key
 import pytz
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from django.utils.translation import gettext as _
 
 from django.contrib.auth.views import LoginView, LogoutView
 
 from admin_chatbot.functions import get_top_dokumen_last_7_days
-from .forms import UploadForm
+from .forms import UploadForm, WhatsAppTokenForm
 
 from .models import ChatHistory, FileUpload
 from django.db.models import Sum
@@ -58,6 +60,36 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         
     #     print(context.values().keys())
     #     return render(request, self.template_name)
+    
+class SetToken(LoginRequiredMixin, FormView):
+    template_name = "set_token_wa.html"
+    form_class = WhatsAppTokenForm
+    success_url = reverse_lazy('set-token-wa')  # Redirect setelah berhasil submit
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        whatsapp_token = os.getenv("WHATSAPP_TOKEN") or ""  # Default ke string kosong jika None
+        context["whatsapp_token"] = whatsapp_token
+        return context
+    
+    def form_valid(self, form):
+        token_wa = form.cleaned_data.get('token_wa')
+        if token_wa:
+            # Update variabel di file .env menggunakan dotenv
+            try:
+                set_key('.env', 'WHATSAPP_TOKEN', token_wa)
+                # Update os.environ untuk runtime (tidak akan update file .env)
+                os.environ['WHATSAPP_TOKEN'] = token_wa
+                messages.success(self.request, 'Token berhasil diunggah dan disimpan di file .env!')
+                
+                # Restart server Django
+                os.execv(sys.executable, ['python'] + sys.argv)
+            except Exception as e:
+                messages.error(self.request, f'Gagal menyimpan token: {str(e)}')
+        else:
+            messages.error(self.request, 'Token tidak valid.')
+        
+        return super().form_valid(form)
     
 class KelolaDokumenView(LoginRequiredMixin, CreateView):
     model = FileUpload

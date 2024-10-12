@@ -39,3 +39,6 @@ class UploadForm(forms.ModelForm):
     #     if file_path:
     #         cleaned_data['file_name'] = file_path.name  # Set nilai file_name dengan nama file yang diunggah
     #     return cleaned_data
+    
+class WhatsAppTokenForm(forms.Form):
+    token_wa = forms.CharField(max_length=255, label='WhatsApp Token')

@@ -32,6 +32,14 @@
                 <div data-i18n="Analytics">Kelola Dokumen</div>
             </a>
         </li>
+        <!-- Set Token WA -->
+        <li class="menu-item {% if request.path == '/dashboard/set-token-wa/' %}active{% endif %}">
+            <a href="{% url 'set-token-wa' %}" class="menu-link">
+                <!-- <i class="bx bx-home-circle"></i> -->
+                <i class='menu-icon tf-icons bx bxs-key'></i>
+                <div data-i18n="Analytics">Set Token Whatsapp</div>
+            </a>
+        </li>
         <li class="menu-item">
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
