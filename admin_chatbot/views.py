@@ -70,17 +70,22 @@ class SetToken(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         whatsapp_token = os.getenv("WHATSAPP_TOKEN") or ""  # Default ke string kosong jika None
+        verify_token = os.getenv("VERIFY_TOKEN") or ""  # Default ke string kosong jika None
         context["whatsapp_token"] = whatsapp_token
+        context["verify_token"] = verify_token
         return context
     
     def form_valid(self, form):
         token_wa = form.cleaned_data.get('token_wa')
+        verify_token = form.cleaned_data.get('verify_token')
         if token_wa:
             # Update variabel di file .env menggunakan dotenv
             try:
                 set_key('.env', 'WHATSAPP_TOKEN', token_wa)
+                set_key('.env', 'VERIFY_TOKEN', verify_token)
                 # Update os.environ untuk runtime (tidak akan update file .env)
                 os.environ['WHATSAPP_TOKEN'] = token_wa
+                os.environ['VERIFY_TOKEN'] = verify_token
                 messages.success(self.request, 'Token berhasil diunggah dan disimpan di file .env!')
                 
                 # Restart server Django

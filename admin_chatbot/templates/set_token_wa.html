@@ -32,6 +32,22 @@
                                readonly
                                onclick="this.removeAttribute('readonly');"
                                required />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Verifikasi token</label>
+                    <div class="input-group mb-3">
+                        <input placeholder="Verifikasi Token"
+                               class="form-control password border-end-0"
+                               id="verify_token"
+                               class="block mt-1 w-full"
+                               type="text"
+                               name="verify_token"
+                               value="{{ verify_token }}"
+                               autocomplete="off"
+                               readonly
+                               onclick="this.removeAttribute('readonly');"
+                               required />
                         <span class="bg-white input-group-text togglePassword" id="">
                             <i data-feather="eye" style="cursor: pointer"></i>
                         </span>
