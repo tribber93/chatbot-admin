@@ -32,7 +32,7 @@ DEBUG = True
 
 # ALLOWED_HOSTS = ['admin.tribber.me', 'localhost', '127.0.0.1', '.ngrok-free.app', '192.168.2.3']
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app', 'http://192.168.2.3', 'http://127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://chatbot.tribber.live','https://*.ngrok-free.app', 'http://192.168.2.3', 'http://127.0.0.1']
 
 # Application definition
 

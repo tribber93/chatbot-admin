@@ -7,7 +7,7 @@ def get_current_greeting(name):
     # Mendapatkan waktu saat ini
     current_time = datetime.now().time()
     
-    kalimat_pembuka = ("Selamat datang di layanan informasi Kota Tegal! 🤖\n"
+    kalimat_pembuka = ("Selamat datang di layanan informasi desa Bangsri kab. Brebes! 🤖\n"
                         "Saya siap membantu Anda mendapatkan informasi yang Anda butuhkan. \n\n"
                         # "Berikut beberapa topik yang bisa Anda tanyakan:\n\n"
                         # "\t1. \t💵\n"
@@ -33,7 +33,7 @@ def get_current_greeting(name):
 def info():
     top_5_file = FileUpload.objects.order_by('-count_retrieved')[:10]
     
-    answer =  "Kamu bisa bertanya tentang informasi mengenai kota tegal.\n"
+    answer =  "Kamu bisa bertanya tentang informasi mengenai Desa Bangsri.\n"
     
     if top_5_file != []:
         answer += "Berikut merupakan beberapa contoh hal yang paling sering ditanyakan.\n\n"
