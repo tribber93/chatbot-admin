@@ -1,16 +1,15 @@
 import os
 import json
-import markdown
 import requests
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from admin_chatbot.models import FileUpload
-from rag_task.inference_function import chain_with_source, generate_chat, markdown_to_text
+from rag_task.inference_function import generate_chat
+from rag_task.wa_template import get_current_greeting, info
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
 URL = "https://chatbot.tribber.live/getpost/"
-# URL = "https://fed3-180-253-155-156.ngrok-free.app/getpost/"
+# URL = "https://9321-180-253-155-156.ngrok-free.app/getpost/"
 
 def setwebhook(request):
   response = requests.post(TELEGRAM_API_URL+ "setWebhook?url=" + URL).json()
@@ -34,32 +33,19 @@ def telegram_bot(request):
     return HttpResponseBadRequest('Bad Request')
 
 def handle_update(update):
-  chat_id = update['message']['chat']['id']
+  chat = update['message']['chat']
+  name = chat['first_name'] + " " + chat['last_name']
+  chat_id = chat['id']
   text = update['message']['text']
   if text =='/start':
-    answer = ("Hai! Terima kasih telah menghubungi UCIC Bot! 🤖\n"
-              "Saya siap membantu Anda mendapatkan informasi yang Anda butuhkan. Berikut beberapa topik yang bisa Anda tanyakan:\n\n"
-              "\t1. \t💵 Informasi Biaya\n"
-              "\t2. \t🎓 Layanan Akademik\n"
-              "\t3. \t🌐 Informasi Kampus\n"
-              "\t4. \t♾️ dan lain-lain\n\n"
-              "Selamat berinteraksi!\n")
+    answer = get_current_greeting(name)
     send_message("sendMessage", {
         'chat_id': chat_id,
         'text': answer,
         # 'parse_mode': 'Markdown',
     })
   elif text == '/info':
-    top_5_file = FileUpload.objects.order_by('-count_retrieved')[:10]
-    
-    answer =  "Kamu bisa bertanya tentang informasi seperti hari libur, biaya kuliah, pendaftaran mahasiswa baru dan sebagainya.\n"
-    
-    if top_5_file != []:
-        answer += "Berikut merupakan beberapa contoh hal yang paling sering ditanyakan.\n\n"
-        
-        for file in top_5_file:
-            file_name = remove_extension(file.file_name)
-            answer += f"- {file_name}\n"
+    answer = info()
       
     send_message("sendMessage", {
         'chat_id': chat_id,
@@ -67,7 +53,7 @@ def handle_update(update):
         # 'parse_mode': 'Markdown',
     })
   else:
-    chat_result = generate_chat(text)#, plain_text=True)
+    chat_result = generate_chat(text, clean_response=True)#, plain_text=True)
     # chat_result["answer"] = markdown_to_text(chat_result["answer"])
     
     send_message("sendMessage", {
