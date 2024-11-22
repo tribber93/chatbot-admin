@@ -17,7 +17,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 
 from admin_chatbot.functions import get_top_dokumen_last_7_days
 from admin_chatbot.signal import restart_gunicorn
-from .forms import UploadForm, WhatsAppTokenForm
+from .forms import TelegramTokenForm, UploadForm, WhatsAppTokenForm
 
 from .models import ChatHistory, FileUpload
 from django.db.models import Sum
@@ -86,6 +86,38 @@ class SetToken(LoginRequiredMixin, FormView):
                 # Update os.environ untuk runtime (tidak akan update file .env)
                 os.environ['WHATSAPP_TOKEN'] = token_wa
                 os.environ['VERIFY_TOKEN'] = verify_token
+                messages.success(self.request, 'Token berhasil diunggah dan disimpan di file .env!')
+                
+                # Restart server Django
+                # os.execv(sys.executable, ['python'] + sys.argv)
+                restart_gunicorn()  # Restart Gunicorn
+            except Exception as e:
+                messages.error(self.request, f'Gagal menyimpan token: {str(e)}')
+        else:
+            messages.error(self.request, 'Token tidak valid.')
+        
+        return super().form_valid(form)
+    
+class SetTelegramToken(LoginRequiredMixin, FormView):
+    template_name = "set_token_telegram.html"
+    form_class = TelegramTokenForm
+    # success_url = reverse_lazy('set-token-tele')  # Redirect setelah berhasil submit
+    success_url = reverse_lazy('setwebhook')  # Redirect setelah berhasil submit
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        telegram_token = os.getenv("TELEGRAM_TOKEN") or ""  # Default ke string kosong jika None
+        context["telegram_token"] = telegram_token
+        return context
+    
+    def form_valid(self, form):
+        token_tele = form.cleaned_data.get('token_tele')
+        if token_tele:
+            # Update variabel di file .env menggunakan dotenv
+            try:
+                set_key('.env', 'TELEGRAM_TOKEN', token_tele)
+                # Update os.environ untuk runtime (tidak akan update file .env)
+                os.environ['TELEGRAM_TOKEN'] = token_tele
                 messages.success(self.request, 'Token berhasil diunggah dan disimpan di file .env!')
                 
                 # Restart server Django

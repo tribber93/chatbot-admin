@@ -40,6 +40,14 @@
                 <div data-i18n="Analytics">Set Token Whatsapp</div>
             </a>
         </li>
+        <!-- Set Token Telegram -->
+        <li class="menu-item {% if request.path == '/dashboard/set-token-tele/' %}active{% endif %}">
+            <a href="{% url 'set-token-tele' %}" class="menu-link">
+                <!-- <i class="bx bx-home-circle"></i> -->
+                <i class='menu-icon tf-icons bx bxs-key'></i>
+                <div data-i18n="Analytics">Set Token Telegram</div>
+            </a>
+        </li>
         <li class="menu-item">
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}

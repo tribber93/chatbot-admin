@@ -43,3 +43,6 @@ class UploadForm(forms.ModelForm):
 class WhatsAppTokenForm(forms.Form):
     token_wa = forms.CharField(max_length=255, label='WhatsApp Token')
     verify_token = forms.CharField(max_length=255, label='Verify Token')
+
+class TelegramTokenForm(forms.Form):
+    token_tele = forms.CharField(max_length=255, label='Telegram Token')

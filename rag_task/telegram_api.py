@@ -7,10 +7,10 @@ from django.views.decorators.csrf import csrf_exempt
 from admin_chatbot.models import FileUpload
 from rag_task.inference_function import chain_with_source, generate_chat, markdown_to_text
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TEST_TOKEN")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
 URL = "https://chatbot.tribber.live/getpost/"
-# URL = "https://2b5b-114-5-214-185.ngrok-free.app/getpost/"
+# URL = "https://fed3-180-253-155-156.ngrok-free.app/getpost/"
 
 def setwebhook(request):
   response = requests.post(TELEGRAM_API_URL+ "setWebhook?url=" + URL).json()
