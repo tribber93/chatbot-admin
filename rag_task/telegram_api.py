@@ -9,7 +9,7 @@ from rag_task.wa_template import get_current_greeting, info
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/'
 URL = "https://chatbot.tribber.live/getpost/"
-# URL = "https://9321-180-253-155-156.ngrok-free.app/getpost/"
+# URL = "https://289e-36-72-142-104.ngrok-free.app/getpost/"
 
 def setwebhook(request):
   response = requests.post(TELEGRAM_API_URL+ "setWebhook?url=" + URL).json()
@@ -34,11 +34,16 @@ def telegram_bot(request):
 
 def handle_update(update):
   chat = update['message']['chat']
-  name = chat['first_name'] + " " + chat['last_name']
+  # Ambil first_name dan last_name
+  first_name = chat.get('first_name', '')
+  last_name = chat.get('last_name', '')
+
+  # Gabungkan nama dengan kondisi jika last_name kosong
+  full_name = f"{first_name} {last_name}" if last_name else first_name
   chat_id = chat['id']
   text = update['message']['text']
   if text =='/start':
-    answer = get_current_greeting(name)
+    answer = get_current_greeting(full_name)
     send_message("sendMessage", {
         'chat_id': chat_id,
         'text': answer,
