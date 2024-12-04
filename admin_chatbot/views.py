@@ -56,12 +56,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         
         return context
 
-    # def get(self, request, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-        
-    #     print(context.values().keys())
-    #     return render(request, self.template_name)
-    
 class SetToken(LoginRequiredMixin, FormView):
     template_name = "set_token_wa.html"
     form_class = WhatsAppTokenForm
