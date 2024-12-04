@@ -14,7 +14,7 @@ def get_current_greeting(name):
                         # "\t2. \t🎓\n"
                         # "\t3. \t🌐\n"
                         # "\t4. \t♾️\n\n"
-                        "Untuk mengetahui topik yang bisa ditanyakan ketik */info* !\n"
+                        "Untuk mengetahui topik yang bisa ditanyakan ketik */info* !\n\n"
                         "Kami juga ingin mendengar pendapat Anda tentang layanan ini. Silakan isi kuesioner melalui tautan berikut: https://forms.gle/K8ygr4SK6iHUZnJv9.\n"
                         "Matur nuwun! 😊")
     
