@@ -60,12 +60,16 @@ def handle_update(update):
   else:
     chat_result = generate_chat(text, clean_response=True)#, plain_text=True)
     # chat_result["answer"] = markdown_to_text(chat_result["answer"])
-    kuesioner = "\n\nKami juga ingin mendengar pendapat Anda tentang layanan ini. Silakan isi kuesioner melalui tautan berikut: https://forms.gle/K8ygr4SK6iHUZnJv9.\nMatur nuwun! 😊"
+    kuesioner = "Kami juga ingin mendengar pendapat Anda tentang layanan ini. Silakan isi kuesioner melalui tautan berikut: https://forms.gle/K8ygr4SK6iHUZnJv9.\nMatur nuwun! 😊"
     
     send_message("sendMessage", {
       'chat_id': chat_id,
-      'text': chat_result["answer"] + kuesioner,
-      'parse_mode': 'MarkdownV2',
+      'text': chat_result["answer"],
+      # 'parse_mode': 'MarkdownV2',
+    })
+    send_message("sendMessage", {
+      'chat_id': chat_id,
+      'text': kuesioner,
     })
 
 def send_message(method, data):
