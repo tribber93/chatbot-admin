@@ -1,4 +1,5 @@
 import os
+import time
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from bs4 import BeautifulSoup
 import markdown
@@ -71,11 +72,11 @@ def chain_with_source():
 def is_unanswerable_response(response):
     # # Daftar kata kunci yang menunjukkan ketidakmampuan menjawab
     keywords = [
-        "Maaf", "tidak tersedia", "halo",
+        "Maaf", "Mohon maaf", "halo", "hai",
         # "tidak bisa", 
-        "tidak ada informasi", "tidak ditemukan", "belum ada informasi", 
+        # "tidak ada informasi", "tidak ditemukan", "belum ada informasi", 
         # "tidak diketahui", "tidak dapat",
-        "tidak tersedia dalam dokumen yang diberikan"
+        # "tidak tersedia dalam dokumen yang diberikan"
     ]
     
     # # Memeriksa apakah salah satu kata kunci ada dalam respon
@@ -99,6 +100,11 @@ def generate_chat(query, clean_response=False, plain_text=False):
     Returns:
         Map: berisi question dan answer
     """
+    
+    is_answered = 0
+    # Mulai waktu
+    start_time = time.time()
+    
     result = chain_with_source().invoke(query)
         
     output = {
@@ -129,7 +135,14 @@ def generate_chat(query, clean_response=False, plain_text=False):
         if is_answered:
             FileUpload.objects.filter(id=doc_id).update(count_retrieved=F('count_retrieved') + 1)
             
-        ChatHistory.objects.create(message=query, file_upload_id=doc_id, is_answered=is_answered)
+    
+    # Akhiri waktu
+    end_time = time.time()
+
+    # Hitung response time
+    response_time = round(end_time - start_time, 2)
+    # print(f"Response Time: {response_time:.2f} seconds")
+    ChatHistory.objects.create(message=query, file_upload_id=doc_id or None, is_answered=is_answered, response_time=response_time)
         
     return output
 
