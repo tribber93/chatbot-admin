@@ -62,8 +62,18 @@ To build this RAG-based chatbot, the following tools and technologies were utili
 ## Screenshots
 
 ### Chat Interface
-![Chat Interface](https://media.licdn.com/dms/image/v2/D562DAQHeJXfiQjtcdA/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108056490?e=1736470800&v=beta&t=PawkFXsElFBuZadV9fSCT5-q5mTjoPKZGI3U2VggQ4s)
-![Chat Interface](https://media.licdn.com/dms/image/v2/D562DAQHqn-ZlxQgABQ/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108067829?e=1736470800&v=beta&t=4BSB1O4ow8vuoYLxrlR4eWoEJhiojwfBKDBBXXUksnI)
+<table>
+  <tr>
+    <td>
+      <img src="https://media.licdn.com/dms/image/v2/D562DAQHeJXfiQjtcdA/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108056490?e=1736470800&v=beta&t=PawkFXsElFBuZadV9fSCT5-q5mTjoPKZGI3U2VggQ4s" alt="Chat Interface 1" width="100%">
+      <p style="text-align: center;">Chat Interface 1</p>
+    </td>
+    <td>
+      <img src="https://media.licdn.com/dms/image/v2/D562DAQHqn-ZlxQgABQ/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108067829?e=1736470800&v=beta&t=4BSB1O4ow8vuoYLxrlR4eWoEJhiojwfBKDBBXXUksnI" alt="Chat Interface 2" width="100%">
+      <p style="text-align: center;">Chat Interface 2</p>
+    </td>
+  </tr>
+</table>
 
 ---
 
