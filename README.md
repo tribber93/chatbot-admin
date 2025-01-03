@@ -62,7 +62,7 @@ To build this RAG-based chatbot, the following tools and technologies were utili
 ## Screenshots
 
 ### Chat Interface
-<table style="width: 100%; text-align: center;">
+<table style="width: 100%; text-align: center; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px;">
       <img src="https://media.licdn.com/dms/image/v2/D562DAQHeJXfiQjtcdA/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108056490?e=1736470800&v=beta&t=PawkFXsElFBuZadV9fSCT5-q5mTjoPKZGI3U2VggQ4s" alt="Chat Interface 1" width="50%">
@@ -74,13 +74,13 @@ To build this RAG-based chatbot, the following tools and technologies were utili
 </table>
 
 ### Admin Interface
-<table style="width: 100%; text-align: center;">
+<table style="width: 100%; text-align: center; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px;">
-      <img src="https://media.licdn.com/dms/image/v2/D562DAQGxqjWKl3j3pA/profile-treasury-image-shrink_800_800/profile-treasury-image-shrink_800_800/0/1730108013356?e=1736470800&v=beta&t=0YXLJfwRhmhh4Q-tjrpGLXeTotupsrxgcM2RT7sy0oo" alt="Admin Interface 1" width="50%">
+      <img src="https://media.licdn.com/dms/image/v2/D562DAQGxqjWKl3j3pA/profile-treasury-image-shrink_800_800/profile-treasury-image-shrink_800_800/0/1730108013356?e=1736470800&v=beta&t=0YXLJfwRhmhh4Q-tjrpGLXeTotupsrxgcM2RT7sy0oo" alt="Admin Interface 1" width="100%">
     </td>
     <td style="width: 50%; padding: 10px;">
-      <img src="https://media.licdn.com/dms/image/v2/D562DAQF5qvjBIj9-Wg/profile-treasury-image-shrink_800_800/profile-treasury-image-shrink_800_800/0/1730108027129?e=1736470800&v=beta&t=aCzT1c1OgX-J7kt9U6R81Eik1wLfOih6nsZ6nOJZgc0" alt="Admin Interface 2" width="50%">
+      <img src="https://media.licdn.com/dms/image/v2/D562DAQF5qvjBIj9-Wg/profile-treasury-image-shrink_800_800/profile-treasury-image-shrink_800_800/0/1730108027129?e=1736470800&v=beta&t=aCzT1c1OgX-J7kt9U6R81Eik1wLfOih6nsZ6nOJZgc0" alt="Admin Interface 2" width="100%">
     </td>
   </tr>
 </table>
