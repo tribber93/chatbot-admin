@@ -62,19 +62,17 @@ To build this RAG-based chatbot, the following tools and technologies were utili
 ## Screenshots
 
 ### Chat Interface
-<div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+<table style="width: 100%; text-align: center;">
+  <tr>
+    <td style="width: 50%; padding: 10px;">
+      <img src="https://media.licdn.com/dms/image/v2/D562DAQHeJXfiQjtcdA/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108056490?e=1736470800&v=beta&t=PawkFXsElFBuZadV9fSCT5-q5mTjoPKZGI3U2VggQ4s" alt="Chat Interface 1" width="100%">
+    </td>
+    <td style="width: 50%; padding: 10px;">
+      <img src="https://media.licdn.com/dms/image/v2/D562DAQHqn-ZlxQgABQ/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730758067829?e=1736470800&v=beta&t=4BSB1O4ow8vuoYLxrlR4eWoEJhiojwfBKDBBXXUksnI" alt="Chat Interface 2" width="100%">
+    </td>
+  </tr>
+</table>
 
-<div style="width: 48%; margin-bottom: 10px;">
-<img src="https://media.licdn.com/dms/image/v2/D562DAQHeJXfiQjtcdA/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108056490?e=1736470800&v=beta&t=PawkFXsElFBuZadV9fSCT5-q5mTjoPKZGI3U2VggQ4s" alt="Chat Interface 1" style="width: 100%; border: 1px solid #ccc;">
-<p style="text-align: center; font-size: 14px; margin-top: 5px;">Chat Interface 1</p>
-</div>
-
-<div style="width: 48%; margin-bottom: 10px;">
-<img src="https://media.licdn.com/dms/image/v2/D562DAQHqn-ZlxQgABQ/profile-treasury-image-shrink_1920_1920/profile-treasury-image-shrink_1920_1920/0/1730108067829?e=1736470800&v=beta&t=4BSB1O4ow8vuoYLxrlR4eWoEJhiojwfBKDBBXXUksnI" alt="Chat Interface 2" style="width: 100%; border: 1px solid #ccc;">
-<p style="text-align: center; font-size: 14px; margin-top: 5px;">Chat Interface 2</p>
-</div>
-
-</div>
 
 ---
 
